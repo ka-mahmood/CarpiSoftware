@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:side_navigation/side_navigation.dart'; // side navigation bar
 
-void main() => runApp(const MyApp());
+void main() {
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  static const appTitle = 'Drawer Demo';
-
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -32,93 +34,180 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState(); // returns _MyHomePageState
+  // _MainViewState createState() => _MainViewState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
+
+  List<Widget> views = const [
+    Center(
+      child: Text('Dashboard'),
     ),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
+    Center(
+      child: Text('Exercise')
     ),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
+    Center(
+      child: Text('Progress')
+    ),
+    Center(
+      child: Text('Account'),
+    ),
+    Center(
+      child: Text('Settings'),
     ),
   ];
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  /// The currently selected index of the bar
+  int selectedIndex = 0;
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
-      body: Center(
-        child: _widgetOptions[_selectedIndex],
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(widget.title),
       ),
-      drawer: Drawer(
-        // Add a ListView to the drawer. This ensures the user can scroll
-        // through the options in the drawer if there isn't enough vertical
-        // space to fit everything.
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'You have pushed the button this many times:',
+            ),
+            Text(
+              '$_counter',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            
+          SideNavigationBar(
+            selectedIndex: selectedIndex,
+            items: const [
+              SideNavigationBarItem(
+                icon: Icons.dashboard,
+                label: 'Dashboard',
               ),
-              child: Text('Drawer Header'),
-            ),
-            ListTile(
-              title: const Text('Home'),
-              selected: _selectedIndex == 0,
-              onTap: () {
-                // Update the state of the app
-                _onItemTapped(0);
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Business'),
-              selected: _selectedIndex == 1,
-              onTap: () {
-                // Update the state of the app
-                _onItemTapped(1);
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('School'),
-              selected: _selectedIndex == 2,
-              onTap: () {
-                // Update the state of the app
-                _onItemTapped(2);
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
+              SideNavigationBarItem(
+                icon: Icons.waving_hand_rounded,
+                label: 'Exercise',
+              ),
+              SideNavigationBarItem(
+                icon: Icons.trending_up,
+                label: 'Progress',
+              ),
+              SideNavigationBarItem(
+                icon: Icons.person,
+                label: 'Account',
+              ),
+              SideNavigationBarItem(
+                icon: Icons.settings,
+                label: 'Settings',
+              ),
+            ],
+            onTap: (index) {
+              setState(() {
+                selectedIndex = index;
+              });
+            },
+          ),
+
+          /// Make it take the rest of the available width
+          Expanded(
+            child: views.elementAt(selectedIndex),
+          )
           ],
         ),
       ),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
 
+
+
+// class _MainViewState extends State<MyHomePage> {
+
+//   // available views
+//   List<Widget> views = const [
+//     Center(
+//       child: Text('Dashboard'),
+//     ),
+//     Center(
+//       child: Text('Exercise')
+//     ),
+//     Center(
+//       child: Text('Progress')
+//     ),
+//     Center(
+//       child: Text('Account'),
+//     ),
+//     Center(
+//       child: Text('Settings'),
+//     ),
+//   ];
+
+//   /// The currently selected index of the bar
+//   int selectedIndex = 0;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Row(
+//         children: [
+//           /// Pretty similar to the BottomNavigationBar!
+//           SideNavigationBar(
+//             selectedIndex: selectedIndex,
+//             items: const [
+//               SideNavigationBarItem(
+//                 icon: Icons.dashboard,
+//                 label: 'Dashboard',
+//               ),
+//               SideNavigationBarItem(
+//                 icon: Icons.waving_hand_rounded,
+//                 label: 'Exercise',
+//               ),
+//               SideNavigationBarItem(
+//                 icon: Icons.trending_up,
+//                 label: 'Progress',
+//               ),
+//               SideNavigationBarItem(
+//                 icon: Icons.person,
+//                 label: 'Account',
+//               ),
+//               SideNavigationBarItem(
+//                 icon: Icons.settings,
+//                 label: 'Settings',
+//               ),
+//             ],
+//             onTap: (index) {
+//               setState(() {
+//                 selectedIndex = index;
+//               });
+//             },
+//           ),
+
+//           /// Make it take the rest of the available width
+//           Expanded(
+//             child: views.elementAt(selectedIndex),
+//           )
+//         ],
+//       ),
+//     );
+//   }
+// }
