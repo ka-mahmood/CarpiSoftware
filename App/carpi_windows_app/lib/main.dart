@@ -516,7 +516,7 @@ class PrescribedExercises extends StatelessWidget {
                       child: Image.network(
                         'https://carpirehab.files.wordpress.com/2024/02/1000019337.jpg',
                         width: width,
-                        height: 250,
+                        // height: 250,
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -533,7 +533,7 @@ class PrescribedExercises extends StatelessWidget {
                       child: Image.network(
                         'https://carpirehab.files.wordpress.com/2024/01/image.png',
                         width: width,
-                        height: 250,
+                        // height: 250,
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -614,7 +614,7 @@ class Dashboard extends StatelessWidget {
                       child: Image.network(
                         'https://carpirehab.files.wordpress.com/2023/12/pexels-photo-3059748.jpeg',
                         width: width,
-                        height: 250,
+                        // height: 250,
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -631,7 +631,7 @@ class Dashboard extends StatelessWidget {
                       child: Image.network(
                         'https://carpirehab.files.wordpress.com/2023/12/handstuff.webp?w=2000&h=',
                         width: width,
-                        height: 250,
+                        // height: 250,
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -731,7 +731,7 @@ class Progress extends StatelessWidget {
                       child: Image.network(
                         'https://carpirehab.files.wordpress.com/2023/12/full_fdp_design.png?w=2000&h=',
                         width: width,
-                        height: 250,
+                        // height: 250,
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -748,7 +748,7 @@ class Progress extends StatelessWidget {
                       child: Image.network(
                         'https://carpirehab.files.wordpress.com/2023/12/image-5.png?w=2000&h=',
                         width: width,
-                        height: 250,
+                        // height: 250,
                         fit: BoxFit.contain,
                       ),
                     ),
