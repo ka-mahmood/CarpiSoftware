@@ -5,6 +5,8 @@ import 'dart:ffi';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
+import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 
 void main() {
   runApp(MyApp());
@@ -69,12 +71,22 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var selectedIndex = 0;
+  int selectedIndex = 0;
+  GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
 
+    // switching for the app navigation bar
+    List<dynamic> _page = [
+      GeneratorPage(),
+      FavoritesPage(),
+      StartupPage(),
+      StartupPage(),
+    ];
+
+    // switching for the side navigation bar
     Widget page;
     switch (selectedIndex) {
       case 0:
@@ -86,12 +98,13 @@ class _MyHomePageState extends State<MyHomePage> {
       case 2:
         page = StartupPage();
         break;
+      case 3:
+        page = StartupPage();
+        break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
 
-    // The container for the current page, with its background color
-    // and subtle switching animation.
     var mainArea = ColoredBox(
       color: colorScheme.background,
       child: AnimatedSwitcher(
@@ -106,45 +119,49 @@ class _MyHomePageState extends State<MyHomePage> {
           if (constraints.maxWidth < 600) {
             // Use a more mobile-friendly layout with BottomNavigationBar
             // on narrow screens.
-            return Column(
-              children: [
-                Expanded(child: mainArea),
-                SafeArea(
-                    
-                    child: NavigationBar(
-                      // backgroundColor: Colors.black,
-                      // indicatorColor: colorScheme.primary,
-                      // selectedItemColor: colorScheme.inverseSurface,
-                      // unselectedItemColor: colorScheme.background,
-                      onDestinationSelected: (int index) {
-                        setState(() {
-                          selectedIndex = index;
-                        });
-                      },
-                      selectedIndex: selectedIndex,
-                    
-                      destinations: const<Widget> [
-                        NavigationDestination(
-                          icon: Icon(Icons.home),
-                          label: 'Home',
-                        ),
-                    
-                        NavigationDestination(
-                          icon: Icon(Icons.front_hand),
-                          label: 'Exercises',
-                        ),
-            
-                        NavigationDestination(
-                          icon: Icon(Icons.person_2),
-                          label: 'Change Account',
-                        ),
-                      ],
-                    ),
-                ),
-                
-              ],
-            );
-          } else { // this is the programmed bottom navigation bar (for some reason)
+    return Scaffold(
+      backgroundColor: colorScheme.background,
+      bottomNavigationBar: CurvedNavigationBar(
+        key: _bottomNavigationKey,
+        index: selectedIndex,
+        items: [
+          CurvedNavigationBarItem(
+            child: Icon(Icons.home),
+            label: 'Dashboard',
+          ),
+          CurvedNavigationBarItem(
+            child: Icon(Icons.front_hand),
+            label: 'Exercise',
+          ),
+          CurvedNavigationBarItem(
+            child: Icon(Icons.trending_up),
+            label: 'Progress',
+          ),
+          CurvedNavigationBarItem(
+            child: Icon(Icons.person_2),
+            label: 'Account',
+          ),
+        ],
+        color: Colors.black12,
+        buttonBackgroundColor: Colors.black12,
+        backgroundColor: colorScheme.background,
+        animationCurve: Curves.easeInOut,
+        animationDuration: Duration(milliseconds: 400),
+        onTap: (index) {
+          setState(() {
+            selectedIndex = index;
+          });
+        },
+        letIndexChange: (index) => true,
+      ),
+      body: Container(
+        color: colorScheme.background,
+        child: Center(
+          child: _page[selectedIndex],
+        )
+      )
+    );  
+          } else { // this is the programmed side bar
             return Row(
               children: [
                 SafeArea(
@@ -161,8 +178,12 @@ class _MyHomePageState extends State<MyHomePage> {
                         label: Text('Exercises'),
                       ),
                       NavigationRailDestination(
+                        icon: Icon(Icons.trending_up),
+                        label: Text('Progress'),
+                      ),
+                      NavigationRailDestination(
                         icon: Icon(Icons.person_2),
-                        label: Text('Change Account'),
+                        label: Text('Account'),
                       ),
                     ],
                     selectedIndex: selectedIndex,
@@ -179,7 +200,6 @@ class _MyHomePageState extends State<MyHomePage> {
           }
         },
       ),
-
       
     );
   }
