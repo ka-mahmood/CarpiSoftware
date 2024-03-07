@@ -277,7 +277,7 @@ class StartupPage extends StatelessWidget {
                 
                     decoration: InputDecoration(
                       hintText: 'Password',
-                      hintStyle: TextStyle(fontSize: 16),
+                      hintStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w200),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
                           borderSide: BorderSide(
