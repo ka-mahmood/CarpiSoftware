@@ -12,6 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'exercise_page.dart';
 import 'login_page.dart';
 import 'dashboard_page.dart';
+import 'progress_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -39,38 +40,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-// class MyAppState extends ChangeNotifier {
-//   var current = WordPair.random();
-//   var history = <WordPair>[];
-
-//   GlobalKey? historyListKey;
-
-//   void getNext() {
-//     history.insert(0, current);
-//     var animatedList = historyListKey?.currentState as AnimatedListState?;
-//     animatedList?.insertItem(0);
-//     current = WordPair.random();
-//     notifyListeners();
-//   }
-
-//   var favorites = <WordPair>[];
-
-//   void toggleFavorite([WordPair? pair]) {
-//     pair = pair ?? current;
-//     if (favorites.contains(pair)) {
-//       favorites.remove(pair);
-//     } else {
-//       favorites.add(pair);
-//     }
-//     notifyListeners();
-//   }
-
-//   void removeFavorite(WordPair pair) {
-//     favorites.remove(pair);
-//     notifyListeners();
-//   }
-// }
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -217,6 +186,38 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 
+// class MyAppState extends ChangeNotifier {
+//   var current = WordPair.random();
+//   var history = <WordPair>[];
+
+//   GlobalKey? historyListKey;
+
+//   void getNext() {
+//     history.insert(0, current);
+//     var animatedList = historyListKey?.currentState as AnimatedListState?;
+//     animatedList?.insertItem(0);
+//     current = WordPair.random();
+//     notifyListeners();
+//   }
+
+//   var favorites = <WordPair>[];
+
+//   void toggleFavorite([WordPair? pair]) {
+//     pair = pair ?? current;
+//     if (favorites.contains(pair)) {
+//       favorites.remove(pair);
+//     } else {
+//       favorites.add(pair);
+//     }
+//     notifyListeners();
+//   }
+
+//   void removeFavorite(WordPair pair) {
+//     favorites.remove(pair);
+//     notifyListeners();
+//   }
+// }
+
 // class GeneratorPage extends StatelessWidget {
 
 //   @override
@@ -316,125 +317,6 @@ class _MyHomePageState extends State<MyHomePage> {
 //     );
 //   }
 // }
-
-
-class Progress extends StatelessWidget {
-
-    @override
-  Widget build(BuildContext context) {
-    // var theme = Theme.of(context);
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    var padding = MediaQuery.of(context).padding;
-    double newheight = height - padding.top - padding.bottom;
-
-    return SafeArea (
-      child: SizedBox(
-        width: width,
-        height: newheight,
-        child: SingleChildScrollView(
-              child: Column (
-                children: [
-                  
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(20, 20, 0, 10),                    
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: RichText(
-                        text: TextSpan(
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: 'Progress',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 30
-                              ),
-                            ),                            
-                          ]
-                        )
-                      ),
-                    ),
-                  ),
-
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(20, 0, 0, 0),                    
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: RichText(
-                        text: TextSpan(
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: 'Take a look at your improvement.',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w100,
-                                fontSize: 16
-                              ),
-                            ),                            
-                          ]
-                        )
-                      ),
-                    ),
-                  ),        
-                  Padding( // insert an element
-                    padding: const EdgeInsets.all(10.0),
-                    child: Card (
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      elevation: 5.0,
-                      child: Image.network(
-                        'https://carpirehab.files.wordpress.com/2023/12/hand_landmarks.png?w=2000&h=',
-                        width: width,
-                        // height: 250,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-        
-                  Padding( // insert an element
-                    padding: const EdgeInsets.all(10.0),
-                    child: Card (
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      elevation: 5.0,
-                      child: Image.network(
-                        'https://carpirehab.files.wordpress.com/2023/12/full_fdp_design.png?w=2000&h=',
-                        width: width,
-                        // height: 250,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-        
-                  Padding( // insert an element
-                    padding: const EdgeInsets.all(10.0),
-                    child: Card (
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      elevation: 5.0,
-                      child: Image.network(
-                        'https://carpirehab.files.wordpress.com/2023/12/image-5.png?w=2000&h=',
-                        width: width,
-                        // height: 250,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-        
-        
-              ],
-              ),
-            ),
-      ),
-    );
-  }
-}   
-
 
 // class FavoritesPage extends StatelessWidget {
 //   @override
