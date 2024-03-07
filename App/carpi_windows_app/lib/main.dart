@@ -1,7 +1,5 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'dart:ffi';
-
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,12 +17,14 @@ class MyApp extends StatelessWidget {
       create: (context) => MyAppState(),
       child: MaterialApp(
         title: 'Carpi App',
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          /* dark theme settings */
         ),
+        themeMode: ThemeMode.dark, 
+        debugShowCheckedModeBanner: false,
         home: StartupPage(),
-      ),
+    ),
     );
   }
 }
@@ -81,6 +81,9 @@ class _MyHomePageState extends State<MyHomePage> {
       case 1:
         page = FavoritesPage();
         break;
+      case 2:
+        page = StartupPage();
+        break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
@@ -88,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // The container for the current page, with its background color
     // and subtle switching animation.
     var mainArea = ColoredBox(
-      color: colorScheme.surfaceVariant,
+      color: colorScheme.background,
       child: AnimatedSwitcher(
         duration: Duration(milliseconds: 200),
         child: page,
@@ -98,48 +101,66 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
-          if (constraints.maxWidth < 450) {
+          if (constraints.maxWidth < 600) {
             // Use a more mobile-friendly layout with BottomNavigationBar
             // on narrow screens.
-            return Column(
-              children: [
-                Expanded(child: mainArea),
-                SafeArea(
-                  child: BottomNavigationBar(
-                    items: [
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.home),
-                        label: 'Home',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.favorite),
-                        label: 'Favorites',
-                      ),
-                    ],
-                    currentIndex: selectedIndex,
-                    onTap: (value) {
-                      setState(() {
-                        selectedIndex = value;
-                      });
-                    },
-                  ),
-                )
-              ],
+            return Container(
+              child: Column(
+                children: [
+                  Expanded(child: mainArea),
+                  SafeArea(
+                    child: NavigationBar(
+                      // indicatorColor: colorScheme.primary,
+                      // selectedItemColor: colorScheme.inverseSurface,
+                      // unselectedItemColor: colorScheme.background,
+                      backgroundColor: Colors.black12,
+
+                      onDestinationSelected: (int index) {
+                        setState(() {
+                          selectedIndex = index;
+                        });
+                      },
+                      selectedIndex: selectedIndex,
+
+                      destinations: const<Widget> [
+                        NavigationDestination(
+                          icon: Icon(Icons.home),
+                          label: 'Home',
+                        ),
+
+                        NavigationDestination(
+                          icon: Icon(Icons.front_hand),
+                          label: 'Exercises',
+                        ),
+                        NavigationDestination(
+                          icon: Icon(Icons.person_2),
+                          label: 'Change Account',
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             );
           } else {
             return Row(
               children: [
                 SafeArea(
                   child: NavigationRail(
-                    extended: constraints.maxWidth >= 600,
+                    extended: constraints.maxWidth >= 750,
+                    backgroundColor: Colors.black12,
                     destinations: [
                       NavigationRailDestination(
                         icon: Icon(Icons.home),
                         label: Text('Home'),
                       ),
                       NavigationRailDestination(
-                        icon: Icon(Icons.favorite),
-                        label: Text('Favorites'),
+                        icon: Icon(Icons.clean_hands),
+                        label: Text('Exercises'),
+                      ),
+                      NavigationRailDestination(
+                        icon: Icon(Icons.person_2),
+                        label: Text('Change Account'),
                       ),
                     ],
                     selectedIndex: selectedIndex,
@@ -168,14 +189,30 @@ class StartupPage extends StatelessWidget {
     var theme = Theme.of(context);
 
     return Container(
-      color: theme.colorScheme.primary,
+      color: theme.colorScheme.background,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-
+          Material (
+            color: theme.colorScheme.background,
+            child: Column (
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  
+                  Text(
+                    "Carpi Rehabilitation",
+                    style: TextStyle(color: theme.colorScheme.primary, fontSize: 30)),
+                    
+                  SizedBox(
+                    width: 300.0,
+                    child: Image.asset('assets/logo.png')
+                    ), //   <--- image
+                ]
+              ),
+          ),
           // email field
           Material (
-            color: theme.colorScheme.primary,
+            color: theme.colorScheme.background,
             child : Padding(
               padding: const EdgeInsets.all(8.0),
               child: SizedBox(
@@ -187,7 +224,7 @@ class StartupPage extends StatelessWidget {
                   hintText: 'Email',
                   hintStyle: TextStyle(fontSize: 16),
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
+                      borderRadius: BorderRadius.circular(20),
                       borderSide: BorderSide(
                           width: 0, 
                           style: BorderStyle.none,
@@ -203,7 +240,7 @@ class StartupPage extends StatelessWidget {
 
           // password field
           Material (
-            color: theme.colorScheme.primary,
+            color: theme.colorScheme.background,
             child : Padding(
               padding: const EdgeInsets.all(8.0),
               child: SizedBox(
@@ -217,7 +254,7 @@ class StartupPage extends StatelessWidget {
                     hintText: 'Password',
                     hintStyle: TextStyle(fontSize: 16),
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(20),
                         borderSide: BorderSide(
                             width: 0, 
                             style: BorderStyle.none,
