@@ -1,8 +1,12 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:ffi';
+
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
+import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 
 void main() {
   runApp(MyApp());
@@ -67,12 +71,22 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var selectedIndex = 0;
+  int selectedIndex = 0;
+  GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
 
+    // switching for the app navigation bar
+    List<dynamic> _page = [
+      GeneratorPage(),
+      FavoritesPage(),
+      StartupPage(),
+      StartupPage(),
+    ];
+
+    // switching for the side navigation bar
     Widget page;
     switch (selectedIndex) {
       case 0:
@@ -84,12 +98,13 @@ class _MyHomePageState extends State<MyHomePage> {
       case 2:
         page = StartupPage();
         break;
+      case 3:
+        page = StartupPage();
+        break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
 
-    // The container for the current page, with its background color
-    // and subtle switching animation.
     var mainArea = ColoredBox(
       color: colorScheme.background,
       child: AnimatedSwitcher(
@@ -104,45 +119,49 @@ class _MyHomePageState extends State<MyHomePage> {
           if (constraints.maxWidth < 600) {
             // Use a more mobile-friendly layout with BottomNavigationBar
             // on narrow screens.
-            return Container(
-              child: Column(
-                children: [
-                  Expanded(child: mainArea),
-                  SafeArea(
-                    child: NavigationBar(
-                      // indicatorColor: colorScheme.primary,
-                      // selectedItemColor: colorScheme.inverseSurface,
-                      // unselectedItemColor: colorScheme.background,
-                      backgroundColor: Colors.black12,
-
-                      onDestinationSelected: (int index) {
-                        setState(() {
-                          selectedIndex = index;
-                        });
-                      },
-                      selectedIndex: selectedIndex,
-
-                      destinations: const<Widget> [
-                        NavigationDestination(
-                          icon: Icon(Icons.home),
-                          label: 'Home',
-                        ),
-
-                        NavigationDestination(
-                          icon: Icon(Icons.front_hand),
-                          label: 'Exercises',
-                        ),
-                        NavigationDestination(
-                          icon: Icon(Icons.person_2),
-                          label: 'Change Account',
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            );
-          } else {
+    return Scaffold(
+      backgroundColor: colorScheme.background,
+      bottomNavigationBar: CurvedNavigationBar(
+        key: _bottomNavigationKey,
+        index: selectedIndex,
+        items: [
+          CurvedNavigationBarItem(
+            child: Icon(Icons.home),
+            label: 'Dashboard',
+          ),
+          CurvedNavigationBarItem(
+            child: Icon(Icons.front_hand),
+            label: 'Exercise',
+          ),
+          CurvedNavigationBarItem(
+            child: Icon(Icons.trending_up),
+            label: 'Progress',
+          ),
+          CurvedNavigationBarItem(
+            child: Icon(Icons.person_2),
+            label: 'Account',
+          ),
+        ],
+        color: Colors.black12,
+        buttonBackgroundColor: Colors.black12,
+        backgroundColor: colorScheme.background,
+        animationCurve: Curves.easeInOut,
+        animationDuration: Duration(milliseconds: 400),
+        onTap: (index) {
+          setState(() {
+            selectedIndex = index;
+          });
+        },
+        letIndexChange: (index) => true,
+      ),
+      body: Container(
+        color: colorScheme.background,
+        child: Center(
+          child: _page[selectedIndex],
+        )
+      )
+    );  
+          } else { // this is the programmed side bar
             return Row(
               children: [
                 SafeArea(
@@ -155,12 +174,16 @@ class _MyHomePageState extends State<MyHomePage> {
                         label: Text('Home'),
                       ),
                       NavigationRailDestination(
-                        icon: Icon(Icons.clean_hands),
+                        icon: Icon(Icons.front_hand),
                         label: Text('Exercises'),
                       ),
                       NavigationRailDestination(
+                        icon: Icon(Icons.trending_up),
+                        label: Text('Progress'),
+                      ),
+                      NavigationRailDestination(
                         icon: Icon(Icons.person_2),
-                        label: Text('Change Account'),
+                        label: Text('Account'),
                       ),
                     ],
                     selectedIndex: selectedIndex,
@@ -177,6 +200,7 @@ class _MyHomePageState extends State<MyHomePage> {
           }
         },
       ),
+      
     );
   }
 }
@@ -190,68 +214,39 @@ class StartupPage extends StatelessWidget {
 
     return Container(
       color: theme.colorScheme.background,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Material (
-            color: theme.colorScheme.background,
-            child: Column (
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  
-                  Text(
-                    "Carpi Rehabilitation",
-                    style: TextStyle(color: theme.colorScheme.primary, fontSize: 30)),
+      child: SafeArea (
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Material (
+              color: theme.colorScheme.background,
+              child: Column (
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
                     
-                  SizedBox(
-                    width: 300.0,
-                    child: Image.asset('assets/logo.png')
-                    ), //   <--- image
-                ]
-              ),
-          ),
-          // email field
-          Material (
-            color: theme.colorScheme.background,
-            child : Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                width: 300.0,
-              child: TextField(
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  hintText: 'Email',
-                  hintStyle: TextStyle(fontSize: 16),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide(
-                          width: 0, 
-                          style: BorderStyle.none,
-                      ),
-                  ),
-                  filled: true,
-                  contentPadding: EdgeInsets.all(16),
+                    Text(
+                      "Carpi Rehabilitation",
+                      style: TextStyle(color: theme.colorScheme.primary, fontSize: 30)),
+                      
+                    SizedBox(
+                      width: 300.0,
+                      child: Image.asset('assets/logo.png')
+                      ), //   <--- image
+                  ]
                 ),
-              ),
-              ),
             ),
-          ),
-
-          // password field
-          Material (
-            color: theme.colorScheme.background,
-            child : Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                width: 300.0,
+            // email field
+            Material (
+              color: theme.colorScheme.background,
+              child : Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  width: 300.0,
                 child: TextField(
                   textAlign: TextAlign.center,
                   keyboardType: TextInputType.text,
-                  obscureText: true,
-              
                   decoration: InputDecoration(
-                    hintText: 'Password',
+                    hintText: 'Email',
                     hintStyle: TextStyle(fontSize: 16),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -264,48 +259,80 @@ class StartupPage extends StatelessWidget {
                     contentPadding: EdgeInsets.all(16),
                   ),
                 ),
+                ),
               ),
             ),
-          ),
 
-          // login button
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: ElevatedButton(
-                child: const Text("Log in"),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MyHomePage()),
-                  );              
-                },
+            // password field
+            Material (
+              color: theme.colorScheme.background,
+              child : Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  width: 300.0,
+                  child: TextField(
+                    textAlign: TextAlign.center,
+                    keyboardType: TextInputType.text,
+                    obscureText: true,
+                
+                    decoration: InputDecoration(
+                      hintText: 'Password',
+                      hintStyle: TextStyle(fontSize: 16),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: BorderSide(
+                              width: 0, 
+                              style: BorderStyle.none,
+                          ),
+                      ),
+                      filled: true,
+                      contentPadding: EdgeInsets.all(16),
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
 
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: ElevatedButton(
-                child: const Text("Get started"),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MyHomePage()),
-                  );              
-                },
+            // login button
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: ElevatedButton(
+                  child: const Text("Log in"),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyHomePage()),
+                    );              
+                  },
+                ),
               ),
             ),
-          ),
-      ],
-      )
+
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: ElevatedButton(
+                  child: const Text("Get started"),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyHomePage()),
+                    );              
+                  },
+                ),
+              ),
+            ),
+        ],
+        ),
+      ),
     );
   }
 
 }
 
 class GeneratorPage extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
@@ -317,39 +344,45 @@ class GeneratorPage extends StatelessWidget {
     } else {
       icon = Icons.favorite_border;
     }
+    var colorScheme = Theme.of(context).colorScheme;
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            flex: 3,
-            child: HistoryListView(),
-          ),
-          SizedBox(height: 10),
-          BigCard(pair: pair),
-          SizedBox(height: 10),
-          Row(
-            mainAxisSize: MainAxisSize.min,
+    return Container(
+      color: colorScheme.background,
+      child: Center(
+        child: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  appState.toggleFavorite();
-                },
-                icon: Icon(icon),
-                label: Text('Like'),
+              Expanded(
+                flex: 3,
+                child: HistoryListView(),
               ),
-              SizedBox(width: 10),
-              ElevatedButton(
-                onPressed: () {
-                  appState.getNext();
-                },
-                child: Text('Next'),
+              SizedBox(height: 10),
+              BigCard(pair: pair),
+              SizedBox(height: 10),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      appState.toggleFavorite();
+                    },
+                    icon: Icon(icon),
+                    label: Text('Like'),
+                  ),
+                  SizedBox(width: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      appState.getNext();
+                    },
+                    child: Text('Next'),
+                  ),
+                ],
               ),
+              Spacer(flex: 2),
             ],
           ),
-          Spacer(flex: 2),
-        ],
+        ),
       ),
     );
   }
@@ -398,6 +431,18 @@ class BigCard extends StatelessWidget {
   }
 }
 
+// class PrescribedExercises extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     var theme = Theme.of(context);
+//     return SafeArea (
+//       child: Column(
+
+//       )
+//     );
+//   }
+// }   
+
 class FavoritesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -410,40 +455,42 @@ class FavoritesPage extends StatelessWidget {
       );
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(30),
-          child: Text('You have '
-              '${appState.favorites.length} favorites:'),
-        ),
-        Expanded(
-          // Make better use of wide windows with a grid.
-          child: GridView(
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 400,
-              childAspectRatio: 400 / 80,
-            ),
-            children: [
-              for (var pair in appState.favorites)
-                ListTile(
-                  leading: IconButton(
-                    icon: Icon(Icons.delete_outline, semanticLabel: 'Delete'),
-                    color: theme.colorScheme.primary,
-                    onPressed: () {
-                      appState.removeFavorite(pair);
-                    },
-                  ),
-                  title: Text(
-                    pair.asLowerCase,
-                    semanticsLabel: pair.asPascalCase,
-                  ),
-                ),
-            ],
+    return SafeArea(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(30),
+            child: Text('You have '
+                '${appState.favorites.length} favorites:'),
           ),
-        ),
-      ],
+          Expanded(
+            // Make better use of wide windows with a grid.
+            child: GridView(
+              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 400,
+                childAspectRatio: 400 / 80,
+              ),
+              children: [
+                for (var pair in appState.favorites)
+                  ListTile(
+                    leading: IconButton(
+                      icon: Icon(Icons.delete_outline, semanticLabel: 'Delete'),
+                      color: theme.colorScheme.primary,
+                      onPressed: () {
+                        appState.removeFavorite(pair);
+                      },
+                    ),
+                    title: Text(
+                      pair.asLowerCase,
+                      semanticsLabel: pair.asPascalCase,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      )
     );
   }
 }

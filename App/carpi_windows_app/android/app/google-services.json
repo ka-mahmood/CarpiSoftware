@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "668259295968",
+    "project_id": "carpi-rehab",
+    "storage_bucket": "carpi-rehab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:668259295968:android:d7dede2d5e2e309a0da685",
+        "android_client_info": {
+          "package_name": "com.example.carpi_windows_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAl9vTqPw-HShjOsLCKFswTXYVwV8Od-RY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
