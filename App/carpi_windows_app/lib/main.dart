@@ -2,6 +2,7 @@
 
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
@@ -81,9 +82,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // switching for the app navigation bar
     List<dynamic> _page = [
-      GeneratorPage(),
+      Dashboard(),
       PrescribedExercises(),
-      FavoritesPage(),
+      Progress(),
       StartupPage(),
     ];
 
@@ -91,13 +92,13 @@ class _MyHomePageState extends State<MyHomePage> {
     Widget page;
     switch (selectedIndex) {
       case 0:
-        page = GeneratorPage();
+        page = Dashboard();
         break;
       case 1:
         page = PrescribedExercises();
         break;
       case 2:
-        page = FavoritesPage();
+        page = Progress();
         break;
       case 3:
         page = StartupPage();
@@ -121,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
             // Use a more mobile-friendly layout with BottomNavigationBar
             // on narrow screens.
     return Scaffold(
-      backgroundColor: colorScheme.background,
+
       bottomNavigationBar: CurvedNavigationBar(
         key: _bottomNavigationKey,
         index: selectedIndex,
@@ -129,18 +130,22 @@ class _MyHomePageState extends State<MyHomePage> {
           CurvedNavigationBarItem(
             child: Icon(Icons.home),
             label: 'Dashboard',
+            labelStyle: TextStyle(color: colorScheme.onBackground)
           ),
           CurvedNavigationBarItem(
             child: Icon(Icons.front_hand),
             label: 'Exercise',
+            labelStyle: TextStyle(color: colorScheme.onBackground)
           ),
           CurvedNavigationBarItem(
             child: Icon(Icons.trending_up),
             label: 'Progress',
+            labelStyle: TextStyle(color: colorScheme.onBackground)
           ),
           CurvedNavigationBarItem(
             child: Icon(Icons.person_2),
             label: 'Account',
+            labelStyle: TextStyle(color: colorScheme.onBackground)
           ),
         ],
         color: Colors.black12,
@@ -254,7 +259,7 @@ class StartupPage extends StatelessWidget {
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
                     hintText: 'Email',
-                      hintStyle: TextStyle(fontSize: 16),
+                      hintStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w200),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
                         borderSide: BorderSide(
@@ -305,7 +310,7 @@ class StartupPage extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Center(
                 child: ElevatedButton(
-                  child: const Text("Log in"),
+                  child: const Text("Log in", style:TextStyle(fontWeight: FontWeight.w100)),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -320,7 +325,7 @@ class StartupPage extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Center(
                 child: ElevatedButton(
-                  child: const Text("Get started"),
+                  child: const Text("Get started", style:TextStyle(fontWeight: FontWeight.w100)),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -444,110 +449,320 @@ class PrescribedExercises extends StatelessWidget {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     double width = MediaQuery.of(context).size.width;
-    // double height = MediaQuery.of(context).size.height;
-    // var padding = MediaQuery.of(context).padding;
-    // double newheight = height - padding.top - padding.bottom;
+    double height = MediaQuery.of(context).size.height;
+    var padding = MediaQuery.of(context).padding;
+    double newheight = height - padding.top - padding.bottom;
 
     return SafeArea (
-      child: SingleChildScrollView(
-            child: Column (
-              children: [
-                
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: RichText(
-                      text: TextSpan(
-                        children: <InlineSpan>[
-                          TextSpan(
-                            text: 'Your',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w100,
-                              fontSize: 30
-                            )
-                          ),
-                          TextSpan(
-                            text: ' Exercises',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 30
-                            )
-                          ),
-                        ]
-                      )
-                      // text: WidgetSpan(
-                      //   child: Text(
-                      //     'Your Exercises',
-                      //     // style: TextTheme(
-                      //     //   textStyle: Theme.of(context).textTheme.displayLarge,
-                      //     //   fontSize: 30,
-                      //     //   fontWeight: FontWeight.w700,
-                      //     // ),
-                      //   ),
-                      // ),
+      child: SizedBox(
+        width: width,
+        height: newheight,
+        child: SingleChildScrollView(
+              child: Column (
+                children: [
+                  
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: RichText(
+                        text: TextSpan(
+                          children: <InlineSpan>[
+                            TextSpan(
+                              text: 'Your',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w100,
+                                fontSize: 30
+                              )
+                            ),
+                            TextSpan(
+                              text: ' Exercises',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 30
+                              )
+                            ),
+                          ]
+                        )
+                      ),
                     ),
                   ),
-                ),
-
-                Padding( // insert an element
-                  padding: const EdgeInsets.all(10.0),
-                  child: Card (
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    elevation: 5.0,
-                    child: Image.network(
-                      'https://carpirehab.files.wordpress.com/2023/12/draft-1.webp',
-                      width: width,
-                      // height: 250,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-
-                Padding( // insert an element
-                  padding: const EdgeInsets.all(10.0),
-                  child: Card (
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    elevation: 5.0,
-                    child: Image.network(
-                      'https://carpirehab.files.wordpress.com/2024/02/1000019337.jpg',
-                      width: width,
-                      height: 250,
-                      fit: BoxFit.contain,
+        
+                  Padding( // insert an element
+                    padding: const EdgeInsets.all(10.0),
+                    child: Card (
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      elevation: 5.0,
+                      child: Image.network(
+                        'https://carpirehab.files.wordpress.com/2023/12/draft-1.webp',
+                        width: width,
+                        // height: 250,
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
-                ),
-
-                Padding( // insert an element
-                  padding: const EdgeInsets.all(10.0),
-                  child: Card (
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    elevation: 5.0,
-                    child: Image.network(
-                      'https://carpirehab.files.wordpress.com/2024/01/image.png',
-                      width: width,
-                      height: 250,
-                      fit: BoxFit.contain,
+        
+                  Padding( // insert an element
+                    padding: const EdgeInsets.all(10.0),
+                    child: Card (
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      elevation: 5.0,
+                      child: Image.network(
+                        'https://carpirehab.files.wordpress.com/2024/02/1000019337.jpg',
+                        width: width,
+                        height: 250,
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
-                ),
-
-
-            ],
+        
+                  Padding( // insert an element
+                    padding: const EdgeInsets.all(10.0),
+                    child: Card (
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      elevation: 5.0,
+                      child: Image.network(
+                        'https://carpirehab.files.wordpress.com/2024/01/image.png',
+                        width: width,
+                        height: 250,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+        
+        
+              ],
+              ),
             ),
-          ),
+      ),
     );
   }
 }   
+
+class Dashboard extends StatelessWidget {
+
+    @override
+  Widget build(BuildContext context) {
+    var theme = Theme.of(context);
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    var padding = MediaQuery.of(context).padding;
+    double newheight = height - padding.top - padding.bottom;
+
+    return SafeArea (
+      child: SizedBox(
+        width: width,
+        height: newheight,
+        child: SingleChildScrollView(
+              child: Column (
+                children: [
+                  
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: RichText(
+                        text: TextSpan(
+                          children: <InlineSpan>[
+                            TextSpan(
+                              text: 'Dashboard',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 30
+                              )
+                            ),
+                          ]
+                        )
+                      ),
+                    ),
+                  ),
+        
+                  Padding( // insert an element
+                    padding: const EdgeInsets.all(10.0),
+                    child: Card (
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      elevation: 5.0,
+                      child: Image.network(
+                        'https://carpirehab.files.wordpress.com/2023/12/pexels-photo-8386755.jpeg',
+                        width: width,
+                        // height: 250,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+        
+                  Padding( // insert an element
+                    padding: const EdgeInsets.all(10.0),
+                    child: Card (
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      elevation: 5.0,
+                      child: Image.network(
+                        'https://carpirehab.files.wordpress.com/2023/12/pexels-photo-3059748.jpeg',
+                        width: width,
+                        height: 250,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+        
+                  Padding( // insert an element
+                    padding: const EdgeInsets.all(10.0),
+                    child: Card (
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      elevation: 5.0,
+                      child: Image.network(
+                        'https://carpirehab.files.wordpress.com/2023/12/handstuff.webp?w=2000&h=',
+                        width: width,
+                        height: 250,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+        
+        
+              ],
+              ),
+            ),
+      ),
+    );
+  }
+}   
+
+class Progress extends StatelessWidget {
+
+    @override
+  Widget build(BuildContext context) {
+    var theme = Theme.of(context);
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    var padding = MediaQuery.of(context).padding;
+    double newheight = height - padding.top - padding.bottom;
+
+    return SafeArea (
+      child: SizedBox(
+        width: width,
+        height: newheight,
+        child: SingleChildScrollView(
+              child: Column (
+                children: [
+                  
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(20, 20, 0, 10),                    
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: RichText(
+                        text: TextSpan(
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: 'Progress',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 30
+                              ),
+                            ),                            
+                          ]
+                        )
+                      ),
+                    ),
+                  ),
+
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(20, 0, 0, 0),                    
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: RichText(
+                        text: TextSpan(
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: 'Take a look at your improvement.',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w100,
+                                fontSize: 16
+                              ),
+                            ),                            
+                          ]
+                        )
+                      ),
+                    ),
+                  ),        
+                  Padding( // insert an element
+                    padding: const EdgeInsets.all(10.0),
+                    child: Card (
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      elevation: 5.0,
+                      child: Image.network(
+                        'https://carpirehab.files.wordpress.com/2023/12/hand_landmarks.png?w=2000&h=',
+                        width: width,
+                        // height: 250,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+        
+                  Padding( // insert an element
+                    padding: const EdgeInsets.all(10.0),
+                    child: Card (
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      elevation: 5.0,
+                      child: Image.network(
+                        'https://carpirehab.files.wordpress.com/2023/12/full_fdp_design.png?w=2000&h=',
+                        width: width,
+                        height: 250,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+        
+                  Padding( // insert an element
+                    padding: const EdgeInsets.all(10.0),
+                    child: Card (
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      elevation: 5.0,
+                      child: Image.network(
+                        'https://carpirehab.files.wordpress.com/2023/12/image-5.png?w=2000&h=',
+                        width: width,
+                        height: 250,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+        
+        
+              ],
+              ),
+            ),
+      ),
+    );
+  }
+}   
+
 
 class FavoritesPage extends StatelessWidget {
   @override
