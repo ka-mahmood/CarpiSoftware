@@ -1,12 +1,11 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'dart:ffi';
-
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,11 +16,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+  final textTheme = Theme.of(context).textTheme;
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
       child: MaterialApp(
         title: 'Carpi App',
         darkTheme: ThemeData(
+          textTheme: GoogleFonts.latoTextTheme(textTheme).copyWith(),  
           brightness: Brightness.dark,
           /* dark theme settings */
         ),
@@ -81,8 +82,8 @@ class _MyHomePageState extends State<MyHomePage> {
     // switching for the app navigation bar
     List<dynamic> _page = [
       GeneratorPage(),
+      PrescribedExercises(),
       FavoritesPage(),
-      StartupPage(),
       StartupPage(),
     ];
 
@@ -93,10 +94,10 @@ class _MyHomePageState extends State<MyHomePage> {
         page = GeneratorPage();
         break;
       case 1:
-        page = FavoritesPage();
+        page = PrescribedExercises();
         break;
       case 2:
-        page = StartupPage();
+        page = FavoritesPage();
         break;
       case 3:
         page = StartupPage();
@@ -225,9 +226,15 @@ class StartupPage extends StatelessWidget {
                   children: [
                     
                     Text(
-                      "Carpi Rehabilitation",
-                      style: TextStyle(color: theme.colorScheme.primary, fontSize: 30)),
-                      
+                      "Carpi",
+                      style: TextStyle(color: theme.colorScheme.primary, fontSize: 30, fontWeight: FontWeight.w600),
+                    ),
+                    
+                    Text(
+                      "Rehabilitation",
+                      style: TextStyle(color: theme.colorScheme.primary, fontSize: 30, fontWeight: FontWeight.w100),
+                    ),
+
                     SizedBox(
                       width: 300.0,
                       child: Image.asset('assets/logo.png')
@@ -247,7 +254,7 @@ class StartupPage extends StatelessWidget {
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
                     hintText: 'Email',
-                    hintStyle: TextStyle(fontSize: 16),
+                      hintStyle: TextStyle(fontSize: 16),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
                         borderSide: BorderSide(
@@ -431,17 +438,116 @@ class BigCard extends StatelessWidget {
   }
 }
 
-// class PrescribedExercises extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     var theme = Theme.of(context);
-//     return SafeArea (
-//       child: Column(
+class PrescribedExercises extends StatelessWidget {
 
-//       )
-//     );
-//   }
-// }   
+    @override
+  Widget build(BuildContext context) {
+    var theme = Theme.of(context);
+    double width = MediaQuery.of(context).size.width;
+    // double height = MediaQuery.of(context).size.height;
+    // var padding = MediaQuery.of(context).padding;
+    // double newheight = height - padding.top - padding.bottom;
+
+    return SafeArea (
+      child: SingleChildScrollView(
+            child: Column (
+              children: [
+                
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: RichText(
+                      text: TextSpan(
+                        children: <InlineSpan>[
+                          TextSpan(
+                            text: 'Your',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w100,
+                              fontSize: 30
+                            )
+                          ),
+                          TextSpan(
+                            text: ' Exercises',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 30
+                            )
+                          ),
+                        ]
+                      )
+                      // text: WidgetSpan(
+                      //   child: Text(
+                      //     'Your Exercises',
+                      //     // style: TextTheme(
+                      //     //   textStyle: Theme.of(context).textTheme.displayLarge,
+                      //     //   fontSize: 30,
+                      //     //   fontWeight: FontWeight.w700,
+                      //     // ),
+                      //   ),
+                      // ),
+                    ),
+                  ),
+                ),
+
+                Padding( // insert an element
+                  padding: const EdgeInsets.all(10.0),
+                  child: Card (
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    elevation: 5.0,
+                    child: Image.network(
+                      'https://carpirehab.files.wordpress.com/2023/12/draft-1.webp',
+                      width: width,
+                      // height: 250,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+
+                Padding( // insert an element
+                  padding: const EdgeInsets.all(10.0),
+                  child: Card (
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    elevation: 5.0,
+                    child: Image.network(
+                      'https://carpirehab.files.wordpress.com/2024/02/1000019337.jpg',
+                      width: width,
+                      height: 250,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+
+                Padding( // insert an element
+                  padding: const EdgeInsets.all(10.0),
+                  child: Card (
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    elevation: 5.0,
+                    child: Image.network(
+                      'https://carpirehab.files.wordpress.com/2024/01/image.png',
+                      width: width,
+                      height: 250,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+
+
+            ],
+            ),
+          ),
+    );
+  }
+}   
 
 class FavoritesPage extends StatelessWidget {
   @override
