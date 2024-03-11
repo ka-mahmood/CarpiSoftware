@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 
-List<ExerciseCardModel> _cardModelList = []; // make a global variable
+// List<ExerciseCardModel> _cardModelList = []; // make a global variable
+List<ExerciseCardModel> _cardModelList = [];
 List<Widget> _cardList = [];
 
 class PrescribedExercises extends StatefulWidget {
@@ -12,6 +14,8 @@ class PrescribedExercises extends StatefulWidget {
 class _PrescribedExercises extends State<PrescribedExercises> {
 
   final _controller = ScrollController();
+  // final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  
   double get maxHeight => 200 + MediaQuery.of(context).padding.top;
   double get minHeight => kToolbarHeight + MediaQuery.of(context).padding.top;
   bool isEmpty = false;
@@ -126,6 +130,9 @@ class _PrescribedExercises extends State<PrescribedExercises> {
               color: Colors.green,
               splashColor: Colors.black12,
               onPressed: () {
+                Navigator.push(context, 
+                MaterialPageRoute(builder: (context) => RunExercisePage(exercise: cardModel)));
+
                 // run the routine
               },
               ),
@@ -133,7 +140,7 @@ class _PrescribedExercises extends State<PrescribedExercises> {
           ),
 
           Padding(
-            padding: EdgeInsets.fromLTRB(20.0, 0, 0, 20.0),
+            padding: EdgeInsets.fromLTRB(15.0, 0, 0, 20.0),
             child: Text(
               ("Sets: ${cardModel.sets}"),
               style: TextStyle(color: colorScheme.onBackground),
@@ -196,12 +203,15 @@ class _PrescribedExercises extends State<PrescribedExercises> {
     String exerciseName = "",
     int duration = 0,
     String description = "",
+    String promptText = "Add a custom exercise", 
   }
+  
   ) async {
 
     bool editing = false;
     if (exerciseName != "") {
       editing = true;
+      promptText = "Edit exercise";
     }
 
     var colorScheme = Theme.of(context).colorScheme; 
@@ -222,7 +232,7 @@ class _PrescribedExercises extends State<PrescribedExercises> {
             ),
 
             title: Text(
-              "Add a Custom Exercise",
+              promptText,
               style: TextStyle(fontSize: 24.0, color: colorScheme.onBackground),
             ),
             content: Container(
@@ -321,7 +331,13 @@ class _PrescribedExercises extends State<PrescribedExercises> {
                             child: const Text("Submit"),
                             onPressed: () {
                               if (!editing) {
-                                _cardModelList.add(ExerciseCardModel(exerciseName, description, reps, sets, duration, 0, ""));  
+                                _cardModelList.add(ExerciseCardModel(exerciseName: exerciseName, 
+                                                                      description: description, 
+                                                                      reps: reps, 
+                                                                      sets: sets, 
+                                                                      duration: duration, 
+                                                                      weight: 0, 
+                                                                      videoLink: ""));  
                               } else if (index < _cardModelList.length) {
                                 _cardModelList[index].exerciseName = exerciseName;
                                 _cardModelList[index].description = description;
@@ -343,7 +359,6 @@ class _PrescribedExercises extends State<PrescribedExercises> {
           );
         });
   }
-
 
 }
 
@@ -426,38 +441,112 @@ class Header extends StatelessWidget {
   
 }
 
-// class addExerciseSidePage extends StatelessWidget {
-//   Widget build(BuildContext context) {
-//   var colorScheme = Theme.of(context).colorScheme;
-//     return SafeArea (
-//       child: Card (
-//         color: colorScheme.background,
-//         clipBehavior: Clip.antiAlias,
-//         child: Column(
+class RunExercisePage extends StatelessWidget {
+  // run the exercises - this will be the 'workout' screen
+  final ExerciseCardModel exercise;
+  RunExercisePage({required this.exercise});
 
-//         ),
-        
-//       ),
-//     );
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black12,
+        title: Text(exercise.exerciseName, style: TextStyle(fontSize: 16)),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.add_alert),
+            tooltip: 'Show Snackbar',
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('This is a snackbar')));
+            },
+          ),
 
-//   }
-// }
+          IconButton(
+            icon: const Icon(Icons.navigate_next),
+            tooltip: 'Go to the next page',
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute<void>(
+                builder: (BuildContext context) {
+                  return Scaffold(
+                    appBar: AppBar(
+                      title: const Text('Next page'),
+                    ),
+                    body: const Center(
+                      child: Text(
+                        'This is the next page',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                    ),
+                  );
+                },
+              ));
+            },
+          ),
+        ],
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            Text(
+              'This is the home page',
+              style: TextStyle(fontSize: 24),
+            ),
+            IconButton(
+              icon: Icon(Icons.notification_add),
+              onPressed: () {
 
-// alert/show dialogue function for adding custom exercise
+                //vibrate
+                Clipboard.setData(ClipboardData(text: ''));
+                HapticFeedback.lightImpact();
+                // send notification
 
-class ExerciseCardModel {
-  String exerciseName;
-  String description;
-  int reps;
-  int sets;
-  int duration;
-  int weight;
-  String videoLink;
-
-  
-  ExerciseCardModel(this.exerciseName, this.description,
-                    this.reps, this.sets, this.duration, 
-                    this.weight, this.videoLink);
-                    
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
+// alert/show dialogue function for adding custom exercise
+class ExerciseCardModel {
+
+  // the variables
+  String exerciseName, description, videoLink;
+  int reps, sets, duration, weight;
+
+  
+  ExerciseCardModel({required this.exerciseName, required this.description,
+                    required this.reps, required this.sets, required this.duration, 
+                    required this.weight, required this.videoLink});
+
+  factory ExerciseCardModel.fromJson(Map<String, dynamic> jsonData) {
+    return ExerciseCardModel(
+      exerciseName: jsonData['name'],
+      description: jsonData['description'],
+      videoLink: jsonData['link'],
+      sets: jsonData['sets'],
+      reps: jsonData['reps'],
+      duration: jsonData['duration'],
+      weight: jsonData['weight'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+    'name': exerciseName,
+    'description': description,
+    'link': videoLink,
+
+    'reps': reps,
+    'sets': sets,
+    'duration': duration,
+    'weight': weight,
+    };
+  }
+
+  
+
+}

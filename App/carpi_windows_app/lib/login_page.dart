@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
 
+
 class StartupPage extends StatelessWidget {
   const StartupPage({super.key});
 

@@ -12,7 +12,12 @@
           "package_name": "com.example.carpi_windows_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "668259295968-r8es9fb8pvqje9pd93k2gk058cgm6ble.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAl9vTqPw-HShjOsLCKFswTXYVwV8Od-RY"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "668259295968-r8es9fb8pvqje9pd93k2gk058cgm6ble.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "668259295968-33koic9lhplobur6gngpa0fehdilr37u.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.carpiWindowsApp.RunnerTests"
+              }
+            }
+          ]
         }
       }
     }
