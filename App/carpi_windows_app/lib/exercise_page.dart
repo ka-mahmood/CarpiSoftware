@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
+List<ExerciseCardModel> _cardModelList = []; // make a global variable
+List<Widget> _cardList = [];
 
 class PrescribedExercises extends StatefulWidget {
   @override
-  _SliverAppBarSnapState createState() => _SliverAppBarSnapState();
+  _PrescribedExercises createState() => _PrescribedExercises();
 }
 
-class _SliverAppBarSnapState extends State<PrescribedExercises> {
-  final _controller = ScrollController();
+class _PrescribedExercises extends State<PrescribedExercises> {
 
+  final _controller = ScrollController();
   double get maxHeight => 200 + MediaQuery.of(context).padding.top;
   double get minHeight => kToolbarHeight + MediaQuery.of(context).padding.top;
   bool isEmpty = false;
+  Color cardBgColor = Colors.black;
 
   @override
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
+    // _cardList.add(addExercise(context, "test", "test desc"));
 
     return Scaffold(
       backgroundColor: colorScheme.background,
@@ -29,6 +34,7 @@ class _SliverAppBarSnapState extends State<PrescribedExercises> {
           physics: AlwaysScrollableScrollPhysics(),
           controller: _controller,
           slivers: [
+
             SliverAppBar(
 
               automaticallyImplyLeading: false,
@@ -42,84 +48,54 @@ class _SliverAppBarSnapState extends State<PrescribedExercises> {
               expandedHeight: maxHeight - MediaQuery.of(context).padding.top,
               bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(0.0),
-                child: Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      
-                      Transform.translate(
-                        offset: Offset(-10, -10),
-                        child: PopupMenuButton(
-                          icon: Icon(Icons.more_vert,color: colorScheme.onBackground), // add this line
-                          itemBuilder: (_) => <PopupMenuItem<String>>[
-                            PopupMenuItem<String>(
-                              value: 'report',
-                              child: Container(
-                                  width: 100,
-                                  // height: 30,
-                                  child: Text(
-                                    "Add exercise",
-                                    style: TextStyle(color: colorScheme.onBackground),
-                                  )
-                              ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    
+                    Transform.translate(
+                      offset: Offset(-10, -10),
+                      child: PopupMenuButton(
+                        icon: Icon(Icons.more_vert,color: colorScheme.onBackground), // add this line
+                        itemBuilder: (_) => <PopupMenuItem<String>>[
+
+                          PopupMenuItem<String>(
+                            value: 'add routine',
+                            child: SizedBox(
+                                width: 100,
+                                // height: 30,
+                                child: Text(
+                                  "Add routine",
+                                  style: TextStyle(color: colorScheme.onBackground),
+                                )
                             ),
-                      
-                                ],
-                                onSelected: (index) async {
-                                  switch (index) {
-                                    case 'report':
-                                    // showDialog(
-                                    //     barrierDismissible: true,
-                                    //     context: context,
-                                    //     builder: (context) => ReportUser(
-                                    //       currentUser: widget.sender,
-                                    //       seconduser: widget.second,
-                                    //     )).then((value) => Navigator.pop(ct))
-                      break;
-                                  }
-                                })
-                      ),
-                    ],
-                  ),
+                          ),
+                        ],
+
+                        onSelected: (index) async {
+                          switch (index) {
+                            case 'add routine':    
+                              showDataAlert(context);   
+                          }
+                        })
+                    ),
+                  ],
                 ),
               ),
 
             ),
-            if (!isEmpty)
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    return _buildCard(index);
-                  },
-                ),
-              )
-            else
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: Center(
-                  child: Text(
-                    "List is empty",
-                    style: TextStyle(
-                      color: colorScheme.onBackground,
-                    ),
-                  ),
-                ),
+
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  if (index < _cardModelList.length) {
+                    return makeExerciseCardModel(_cardModelList[index], context);
+                  }
+                  return null;
+                },
               ),
+            )
           ],
         ),
-      ),
-    );
-  }
-
-  Card _buildCard(int index) {
-    var colorScheme = Theme.of(context).colorScheme;
-    return Card(
-      color: Colors.black12,
-      elevation: 4,
-      margin: EdgeInsets.only(left: 12, right: 12, top: 12),
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 24, horizontal: 12),
-        child: Text("Item $index", style:TextStyle(color:colorScheme.onBackground)),
       ),
     );
   }
@@ -135,6 +111,240 @@ class _SliverAppBarSnapState extends State<PrescribedExercises> {
           duration: Duration(milliseconds: 200), curve: Curves.easeIn));
     }
   }
+
+  Widget makeExerciseCardModel (ExerciseCardModel cardModel, BuildContext context) {
+    var colorScheme = Theme.of(context).colorScheme;
+    return Card(
+      color: colorScheme.background,
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ListTile(
+            leading: IconButton(
+              icon: Icon(Icons.play_arrow),
+              color: Colors.green,
+              splashColor: Colors.black12,
+              onPressed: () {
+                // run the routine
+              },
+              ),
+            title: Text(cardModel.exerciseName, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w100)),
+          ),
+
+          Padding(
+            padding: EdgeInsets.fromLTRB(20.0, 0, 0, 20.0),
+            child: Text(
+              ("Sets: ${cardModel.sets}"),
+              style: TextStyle(color: colorScheme.onBackground),
+            ),
+          ),
+
+          Padding(
+            padding: EdgeInsets.fromLTRB(15.0, 0, 0, 20.0),
+            child: Text(
+              ("Reps: ${cardModel.reps}"),
+              style: TextStyle(color: colorScheme.onBackground),
+            ),
+          ),
+
+          Padding(
+            padding: EdgeInsets.fromLTRB(15.0, 0, 0, 20.0),
+            child: Text(
+              cardModel.description,
+              style: TextStyle(color: colorScheme.onBackground),
+            )
+          ),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                icon: Icon(Icons.delete),
+                color: Colors.red,
+                onPressed: () {
+                  _cardModelList.remove(cardModel);
+                  setState(() {}); 
+                },
+              ),
+              
+              IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: () {
+                  showDataAlert(context, 
+                  index: _cardModelList.indexOf(cardModel),
+                  reps: cardModel.reps, 
+                  sets: cardModel.sets, 
+                  exerciseName: cardModel.exerciseName, 
+                  duration: cardModel.duration, 
+                  description: cardModel.description);
+                },
+              ),
+            ],
+          ),
+      
+        ],
+      
+      )
+    );
+  }
+
+  showDataAlert(BuildContext context, {
+    int index = 0,
+    int reps = 0,
+    int sets = 0,
+    String exerciseName = "",
+    int duration = 0,
+    String description = "",
+  }
+  ) async {
+
+    bool editing = false;
+    if (exerciseName != "") {
+      editing = true;
+    }
+
+    var colorScheme = Theme.of(context).colorScheme; 
+
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(
+                  20.0,
+                ),
+              ),
+            ),
+            contentPadding: EdgeInsets.only(
+              top: 10.0,
+            ),
+
+            title: Text(
+              "Add a Custom Exercise",
+              style: TextStyle(fontSize: 24.0, color: colorScheme.onBackground),
+            ),
+            content: Container(
+              height: 400,
+              child: SingleChildScrollView(
+
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      
+                      child: TextFormField(
+                        style: TextStyle(color: colorScheme.onBackground),
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Enter exercise name',
+                            labelText: 'Exercise name'),
+                        initialValue: exerciseName,
+                        onChanged: (value) { exerciseName = value; },
+                      ),
+                    ),
+
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        style: TextStyle(color: colorScheme.onBackground),
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Sets',
+                            labelText: 'Sets'),
+                        initialValue: sets.toString(),
+                        onChanged: (value) { sets = int.parse(value); },
+                      ),
+                    ),
+                    
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Repetitions',
+                            labelText: 'Reps',
+                        ),
+                        style: TextStyle(color: colorScheme.onBackground),
+                        initialValue: reps.toString(),
+                        onChanged: (value) { reps = int.parse(value); },
+                      ),
+                    ),
+
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Duration',
+                            labelText: 'Time',
+                            suffixText: "seconds",
+                        ),
+                        style: TextStyle(color: colorScheme.onBackground),
+                        initialValue: duration.toString(),
+                        onChanged: (value) { duration = int.parse(value); },
+                      ),
+                    ),
+
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Description',
+                            labelText: 'Description',
+                        ),
+                        style: TextStyle(color: colorScheme.onBackground),
+                        initialValue: description,
+                        maxLines: 5,
+                        onChanged: (value) { description = value; },
+                      ),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            child: const Text("Cancel", style:TextStyle(color:Colors.red)),
+                            onPressed: () {Navigator.of(context).pop();},
+                          ),
+                          
+                          ElevatedButton(
+                            child: const Text("Submit"),
+                            onPressed: () {
+                              if (!editing) {
+                                _cardModelList.add(ExerciseCardModel(exerciseName, description, reps, sets, duration, 0, ""));  
+                              } else if (index < _cardModelList.length) {
+                                _cardModelList[index].exerciseName = exerciseName;
+                                _cardModelList[index].description = description;
+                                _cardModelList[index].reps = reps;
+                                _cardModelList[index].sets = sets;
+                                _cardModelList[index].duration = duration;
+                              }
+                              setState(() {}); 
+                              Navigator.of(context).pop(); 
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+
 }
 
 class Header extends StatelessWidget {
@@ -200,7 +410,7 @@ class Header extends StatelessWidget {
                 )
               ),
               TextSpan(
-                text: ' Exercises',
+                text: ' Routines',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 30
@@ -212,140 +422,42 @@ class Header extends StatelessWidget {
       ),
     );
   }
+
+  
 }
 
-// class PrescribedExercises extends StatelessWidget {
-
-//   @override
+// class addExerciseSidePage extends StatelessWidget {
 //   Widget build(BuildContext context) {
-//     // var theme = Theme.of(context);
-//     double width = MediaQuery.of(context).size.width;
-//     double height = MediaQuery.of(context).size.height;
-//     var padding = MediaQuery.of(context).padding;
-//     double newheight = height - padding.top - padding.bottom;
-
+//   var colorScheme = Theme.of(context).colorScheme;
 //     return SafeArea (
-//       child: SizedBox(
-//         width: width,
-//         height: newheight,
-//         child: CustomScrollView(
-//           slivers: <Widget>[
-//             SliverAppBar(
-//               pinned: true,
-//               flexibleSpace: FlexibleSpaceBar(
-            //     title: RichText(
-            //       text: TextSpan(
-            //         children: <InlineSpan>[
-            //           TextSpan(
-            //             text: 'Your',
-            //             style: TextStyle(
-            //               fontWeight: FontWeight.w100,
-            //               fontSize: 20
-            //             )
-            //           ),
-            //           TextSpan(
-            //             text: ' Exercises',
-            //             style: TextStyle(
-            //               fontWeight: FontWeight.w600,
-            //               fontSize: 20
-            //             )
-            //           ),
-            //         ]
-            //       )
-            //     ),
-            //   ),
+//       child: Card (
+//         color: colorScheme.background,
+//         clipBehavior: Clip.antiAlias,
+//         child: Column(
 
-            // ),
-
-              
-//           ],
-
-//               // child: Column (
-//               //   children: [
-                
-//               //     Padding(
-//               //       padding: EdgeInsets.fromLTRB(0, 20, 0, 20),                    
-//               //       child: SizedBox(
-//               //         // width: double.infinity,
-//               //         child: RichText(
-//               //           text: TextSpan(
-//               //             children: <InlineSpan>[
-//               //               TextSpan(
-//               //                 text: 'Your',
-//               //                 style: TextStyle(
-//               //                   fontWeight: FontWeight.w100,
-//               //                   fontSize: 30
-//               //                 )
-//               //               ),
-//               //               TextSpan(
-//               //                 text: ' Exercises',
-//               //                 style: TextStyle(
-//               //                   fontWeight: FontWeight.w600,
-//               //                   fontSize: 30
-//               //                 )
-//               //               ),
-//               //             ]
-//               //           )
-//               //         ),
-//               //       ),
-//               //     ),
+//         ),
         
-//               //     Padding( // insert an element
-//               //       padding: const EdgeInsets.all(10.0),
-//               //       child: Card (
-//               //         shape: RoundedRectangleBorder(
-//               //           borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
-//               //         ),
-//               //         clipBehavior: Clip.antiAlias,
-//               //         elevation: 5.0,
-//               //         child: Image.network(
-//               //           'https://carpirehab.files.wordpress.com/2023/12/draft-1.webp',
-//               //           width: width,
-//               //           // height: 250,
-//               //           fit: BoxFit.contain,
-//               //         ),
-//               //       ),
-//               //     ),
-        
-//               //     Padding( // insert an element
-//               //       padding: const EdgeInsets.all(10.0),
-//               //       child: Card (
-//               //         shape: RoundedRectangleBorder(
-//               //           borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
-//               //         ),
-//               //         clipBehavior: Clip.antiAlias,
-//               //         elevation: 5.0,
-//               //         child: Image.network(
-//               //           'https://carpirehab.files.wordpress.com/2024/02/1000019337.jpg',
-//               //           width: width,
-//               //           // height: 250,
-//               //           fit: BoxFit.contain,
-//               //         ),
-//               //       ),
-//               //     ),
-        
-//               //     Padding( // insert an element
-//               //       padding: const EdgeInsets.all(10.0),
-//               //       child: Card (
-//               //         shape: RoundedRectangleBorder(
-//               //           borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
-//               //         ),
-//               //         clipBehavior: Clip.antiAlias,
-//               //         elevation: 5.0,
-//               //         child: Image.network(
-//               //           'https://carpirehab.files.wordpress.com/2024/01/image.png',
-//               //           width: width,
-//               //           // height: 250,
-//               //           fit: BoxFit.contain,
-//               //         ),
-//               //       ),
-//               //     ),
-        
-      
-//               //   ],
-//               // ),
-//             ),
 //       ),
 //     );
+
 //   }
-// }   
+// }
+
+// alert/show dialogue function for adding custom exercise
+
+class ExerciseCardModel {
+  String exerciseName;
+  String description;
+  int reps;
+  int sets;
+  int duration;
+  int weight;
+  String videoLink;
+
+  
+  ExerciseCardModel(this.exerciseName, this.description,
+                    this.reps, this.sets, this.duration, 
+                    this.weight, this.videoLink);
+                    
+}
+
