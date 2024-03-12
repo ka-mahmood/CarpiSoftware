@@ -10,17 +10,48 @@ import 'exercise_page.dart';
 import 'login_page.dart';
 import 'dashboard_page.dart';
 import 'progress_page.dart';
+import 'account.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
-
-void main() async {
-  runApp(MyApp());
+class RestartWidget extends StatefulWidget {
+  RestartWidget({this.child});
+ 
+  final Widget? child;
+ 
+  static void restartApp(BuildContext context) {
+    context.findAncestorStateOfType<_RestartWidgetState>()?.restartApp();
+  }
+ 
+  @override
+  State<StatefulWidget> createState() {
+    return _RestartWidgetState();
+  }
+}
+ 
+class _RestartWidgetState extends State<RestartWidget> {
+  Key key = UniqueKey();
+ 
+  void restartApp() {
+    setState(() {
+      key = UniqueKey();
+    });
+  }
+ 
+ 
+  @override
+  Widget build(BuildContext context) {
+    return KeyedSubtree(
+      key: key,
+      child: widget.child ?? Container(),
+    );
+  }
 }
 
-Future<String> checkLogin() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  bool? loginStatus = prefs.getBool("login");
-  return loginStatus.toString();
+void main() async {
+  runApp(      
+    RestartWidget(
+      child:  MyApp()
+    ),
+  );
 }
 
 String loginStatus = ''; // global var to hold login status
@@ -28,9 +59,9 @@ String loginStatus = ''; // global var to hold login status
 class MyApp extends StatelessWidget {
   
   const MyApp({super.key});
+  
   @override
   Widget build(BuildContext context) {
-  checkLogin().then((String value) {loginStatus = value;});
 
   final textTheme = Theme.of(context).textTheme;
     return MaterialApp(    
@@ -42,21 +73,15 @@ class MyApp extends StatelessWidget {
         ),
         themeMode: ThemeMode.dark, 
         debugShowCheckedModeBanner: false,
-        home: Builder(
-          builder: (_) {
-            if (loginStatus == "false") { // not logged in 
-              return StartupPage();
-            } else {
-              return MyHomePage();
-            }
-          }
-        )
+        home: StartupPage(),
+        
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   @override
+  
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
@@ -86,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 2:
         page = Progress();
       case 3:
-        page = StartupPage();
+        page = AccountPage();
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }

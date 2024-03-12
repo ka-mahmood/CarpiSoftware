@@ -3,9 +3,22 @@ import 'main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: must_be_immutable
-class StartupPage extends StatelessWidget {
-  StartupPage({super.key});
-  
+
+class StartupPage extends StatefulWidget {
+  @override
+  State<StartupPage> createState() => _StartupPage();
+}
+
+String loginStatus = '';
+
+class _StartupPage extends State<StartupPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    checkLogin();
+  }
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -13,12 +26,13 @@ class StartupPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-
-  Future<void> recordLogin(bool status) async {
-    final SharedPreferences prefs = await _prefs;
-    prefs.setBool("login", status);
-    print("setting login status");      
+  
+  if (loginStatus == 'true') {
+    print('passes into next');
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.pushReplacement(context,
+                              MaterialPageRoute(builder: (BuildContext context) => MyHomePage()));
+    });
   }
 
   // placeholder authentication for email
@@ -39,7 +53,6 @@ class StartupPage extends StatelessWidget {
               )            
             );
             recordLogin(true);
-          print("setting status to logged in");      
 
           } else {
             ScaffoldMessenger.of(context)
@@ -166,19 +179,6 @@ class StartupPage extends StatelessWidget {
                       ),
                     ),
                   ),
-
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(
-                      child: ElevatedButton(
-                        child: const Text("Log out", style:TextStyle(fontWeight: FontWeight.w100)),
-                        onPressed: () {
-                          recordLogin(false);       
-                        },
-                      ),
-                    ),
-                  ),
-
               ],
               ),
             ),
@@ -187,4 +187,21 @@ class StartupPage extends StatelessWidget {
       ),
     );
   }
+
+  recordLogin(bool status) async {
+    final prefs = await SharedPreferences.getInstance();
+    // setState(() {
+      loginStatus = status.toString();
+    // }); 
+    prefs.setString('login', status.toString());
+  }
+  
+  Future<void> checkLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      loginStatus = (prefs.getString('login') ?? '');
+    });  
+  }
+
+
 }

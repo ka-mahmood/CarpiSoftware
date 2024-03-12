@@ -3,52 +3,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// List<ExerciseCardModel> _cardModelList = []; // make a global variable
 List<ExerciseCardModel> _cardModelList = [];
 
 class PrescribedExercises extends StatefulWidget {
   @override
-  _PrescribedExercises createState() => _PrescribedExercises();
+  State<PrescribedExercises> createState() => _PrescribedExercises();
 }
 
 class _PrescribedExercises extends State<PrescribedExercises> {
 
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   final _controller = ScrollController();
   double get maxHeight => 200 + MediaQuery.of(context).padding.top;
   double get minHeight => kToolbarHeight + MediaQuery.of(context).padding.top;
   bool isEmpty = false;
   Color cardBgColor = Colors.black;
-
-  Future<void> readCardsIn() async {
-    final SharedPreferences prefs = await _prefs;
-
-    setState(() {
-      List<String>? decodedCardString = prefs.getStringList("cards");
-      List<ExerciseCardModel> decodedCards = 
-                    decodedCardString!.map((card)
-                    => ExerciseCardModel.fromJson(json.decode(card))).toList();
-      _cardModelList = decodedCards;
-    });
-  }
   
-  Future<void> writeCards() async {
-    final SharedPreferences prefs = await _prefs;
-
-    setState(() async {
-      List<String> encodedCards = _cardModelList.map((card)=>json.encode(card.toJson())).toList();
-      prefs.setStringList("cards", encodedCards);
-
-      await prefs.setStringList('cards', encodedCards);
-    });
+  @override
+  void initState() {
+    super.initState();
+    readCardsIn();
   }
 
   @override
   Widget build(BuildContext context) {
+    // readCardsIn();
     var colorScheme = Theme.of(context).colorScheme;
-    readCardsIn();
-    // _cardList.add(addExercise(context, "test", "test desc"));
-
     return Scaffold(
       backgroundColor: colorScheme.background,
       body: NotificationListener<ScrollEndNotification>(
@@ -194,6 +173,8 @@ class _PrescribedExercises extends State<PrescribedExercises> {
                 color: Colors.red,
                 onPressed: () {
                   _cardModelList.remove(cardModel);
+                  writeCards();
+                  // readCardsIn();
                   setState(() {}); 
                 },
               ),
@@ -217,6 +198,25 @@ class _PrescribedExercises extends State<PrescribedExercises> {
       
       )
     );
+  }
+
+  Future<void> readCardsIn() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.reload(); 
+    List<String>? decodedCardString = prefs.getStringList('cards');
+    List<ExerciseCardModel> decodedCards = 
+                  decodedCardString!.map((card)
+                  => ExerciseCardModel.fromJson(json.decode(card))).toList();
+    setState(() {
+      _cardModelList = decodedCards;   
+    });
+  }
+
+  Future<void> writeCards() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> encodedCards = _cardModelList.map((card)=>json.encode(card.toJson())).toList();
+    prefs.setStringList('cards', encodedCards);
+    await prefs.setStringList('cards', encodedCards);
   }
 
   showDataAlert(BuildContext context, {
@@ -382,8 +382,10 @@ class _PrescribedExercises extends State<PrescribedExercises> {
                                 _cardModelList[index].sets = sets;
                                 _cardModelList[index].duration = duration;
                               }
+
                               writeCards();
                               setState(() {}); 
+                              
                               Navigator.of(context).pop(); 
                             },
                           ),
