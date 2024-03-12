@@ -1,10 +1,10 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // List<ExerciseCardModel> _cardModelList = []; // make a global variable
 List<ExerciseCardModel> _cardModelList = [];
-List<Widget> _cardList = [];
 
 class PrescribedExercises extends StatefulWidget {
   @override
@@ -13,17 +13,40 @@ class PrescribedExercises extends StatefulWidget {
 
 class _PrescribedExercises extends State<PrescribedExercises> {
 
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   final _controller = ScrollController();
-  // final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  
   double get maxHeight => 200 + MediaQuery.of(context).padding.top;
   double get minHeight => kToolbarHeight + MediaQuery.of(context).padding.top;
   bool isEmpty = false;
   Color cardBgColor = Colors.black;
 
+  Future<void> readCardsIn() async {
+    final SharedPreferences prefs = await _prefs;
+
+    setState(() {
+      List<String>? decodedCardString = prefs.getStringList("cards");
+      List<ExerciseCardModel> decodedCards = 
+                    decodedCardString!.map((card)
+                    => ExerciseCardModel.fromJson(json.decode(card))).toList();
+      _cardModelList = decodedCards;
+    });
+  }
+  
+  Future<void> writeCards() async {
+    final SharedPreferences prefs = await _prefs;
+
+    setState(() async {
+      List<String> encodedCards = _cardModelList.map((card)=>json.encode(card.toJson())).toList();
+      prefs.setStringList("cards", encodedCards);
+
+      await prefs.setStringList('cards', encodedCards);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
+    readCardsIn();
     // _cardList.add(addExercise(context, "test", "test desc"));
 
     return Scaffold(
@@ -237,6 +260,8 @@ class _PrescribedExercises extends State<PrescribedExercises> {
             ),
             content: Container(
               height: 400,
+              width: 500,
+              color: Colors.black12,
               child: SingleChildScrollView(
 
                 padding: const EdgeInsets.all(8.0),
@@ -269,6 +294,10 @@ class _PrescribedExercises extends State<PrescribedExercises> {
                             hintText: 'Sets',
                             labelText: 'Sets'),
                         initialValue: sets.toString(),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly
+                        ], // Only numbers can be entered
                         onChanged: (value) { sets = int.parse(value); },
                       ),
                     ),
@@ -281,6 +310,10 @@ class _PrescribedExercises extends State<PrescribedExercises> {
                             hintText: 'Repetitions',
                             labelText: 'Reps',
                         ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly
+                        ], // Only numbers can be entered
                         style: TextStyle(color: colorScheme.onBackground),
                         initialValue: reps.toString(),
                         onChanged: (value) { reps = int.parse(value); },
@@ -296,6 +329,10 @@ class _PrescribedExercises extends State<PrescribedExercises> {
                             labelText: 'Time',
                             suffixText: "seconds",
                         ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly
+                        ], // Only numbers can be entered
                         style: TextStyle(color: colorScheme.onBackground),
                         initialValue: duration.toString(),
                         onChanged: (value) { duration = int.parse(value); },
@@ -345,6 +382,7 @@ class _PrescribedExercises extends State<PrescribedExercises> {
                                 _cardModelList[index].sets = sets;
                                 _cardModelList[index].duration = duration;
                               }
+                              writeCards();
                               setState(() {}); 
                               Navigator.of(context).pop(); 
                             },

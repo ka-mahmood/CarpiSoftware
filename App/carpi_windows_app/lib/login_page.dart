@@ -1,135 +1,190 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-
+// ignore: must_be_immutable
 class StartupPage extends StatelessWidget {
-  const StartupPage({super.key});
+  StartupPage({super.key});
+  
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
+  Future<void> recordLogin(bool status) async {
+    final SharedPreferences prefs = await _prefs;
+    prefs.setBool("login", status);
+    print("setting login status");      
+  }
+
+  // placeholder authentication for email
+  Future signIn() async {
+      if (_formKey.currentState!.validate()) {
+        if (_emailController.text == "carpi.rehab@gmail.com") { 
+          if (_passwordController.text == "password") {
+            ScaffoldMessenger.of(context)
+            .showSnackBar(
+              SnackBar(
+                content: Text("Logged In Successfully"),
+                duration: Duration(milliseconds: 750),
+              ),
+            ).closed.whenComplete(
+              () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MyHomePage()),
+              )            
+            );
+            recordLogin(true);
+          print("setting status to logged in");      
+
+          } else {
+            ScaffoldMessenger.of(context)
+            .showSnackBar(
+              SnackBar(
+                content: Text("Incorrect password."),
+                duration: Duration(milliseconds: 750),
+              ),);
+          }
+        } else {
+            ScaffoldMessenger.of(context)
+            .showSnackBar(
+              SnackBar(
+                content: Text("No such user exists."),
+                duration: Duration(milliseconds: 750),
+              ),);
+        }
+      }
+    }
+
     var theme = Theme.of(context);
 
-    return Container(
-      color: theme.colorScheme.background,
-      child: SafeArea (
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Material (
-              color: theme.colorScheme.background,
-              child: Column (
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    
-                    Text(
-                      "Carpi",
-                      style: TextStyle(color: theme.colorScheme.primary, fontSize: 30, fontWeight: FontWeight.w600),
-                    ),
-                    
-                    Text(
-                      "Rehabilitation",
-                      style: TextStyle(color: theme.colorScheme.primary, fontSize: 30, fontWeight: FontWeight.w100),
-                    ),
-
-                    SizedBox(
-                      width: 300.0,
-                      child: Image.asset('assets/logo.png')
-                      ), //   <--- image
-                  ]
-                ),
-            ),
-            // email field
-            Material (
-              color: theme.colorScheme.background,
-              child : Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  width: 300.0,
-                child: TextField(
-                  textAlign: TextAlign.center,
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    hintText: 'Email',
-                      hintStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w200),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        borderSide: BorderSide(
-                            width: 0, 
-                            style: BorderStyle.none,
-                        ),
-                    ),
-                    filled: true,
-                    contentPadding: EdgeInsets.all(16),
-                  ),
-                ),
-                ),
-              ),
-            ),
-
-            // password field
-            Material (
-              color: theme.colorScheme.background,
-              child : Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  width: 300.0,
-                  child: TextField(
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.text,
-                    obscureText: true,
-                
-                    decoration: InputDecoration(
-                      hintText: 'Password',
-                      hintStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w200),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          borderSide: BorderSide(
-                              width: 0, 
-                              style: BorderStyle.none,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Login", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w100)),
+          backgroundColor: Colors.black12,
+        ),
+        body: Form(
+          key: _formKey,
+          child: Container(
+            color: theme.colorScheme.background,
+            child: SafeArea (
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Material (
+                    color: theme.colorScheme.background,
+                    child: Column (
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          
+                          Text(
+                            "Carpi",
+                            style: TextStyle(color: theme.colorScheme.primary, fontSize: 30, fontWeight: FontWeight.w600),
                           ),
+                          
+                          Text(
+                            "Rehabilitation",
+                            style: TextStyle(color: theme.colorScheme.primary, fontSize: 30, fontWeight: FontWeight.w100),
+                          ),
+          
+                          SizedBox(
+                            width: 200.0,
+                            child: Image.asset('assets/logo.png')
+                            ), //   <--- image
+                        ]
                       ),
-                      filled: true,
-                      contentPadding: EdgeInsets.all(16),
+                  ),
+                  // email field
+                  Material (
+                    color: theme.colorScheme.background,
+                    child : Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: 300.0,
+                      child: TextField(
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.text,
+                        controller: _emailController,
+                        style: TextStyle(color: theme.colorScheme.onBackground, fontWeight: FontWeight.w100),
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Email'),
+                      ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
+          
+                  // password field
+                  Material (
+                    color: theme.colorScheme.background,
+                    child : Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: 300.0,
+                        child: TextField(
+                          style: TextStyle(color: theme.colorScheme.onBackground, fontWeight: FontWeight.w100),
+                          controller: _passwordController,
+                          textAlign: TextAlign.center,
+                          keyboardType: TextInputType.text,
+                          obscureText: true,
+                      
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Password'),
+      
+                        ),
+                      ),
+                    ),
+                  ),
+          
+                  // login button
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: FloatingActionButton.extended(
+                        icon: Icon(Icons.login),
+                        label: const Text("Log in", style:TextStyle(fontWeight: FontWeight.w100)),
+                        onPressed: () {
+                          signIn();             
+                        },
+                      ),
+                    ),
+                  ),
+          
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: ElevatedButton(
+                        child: const Text("Not registered? Sign up here.", style:TextStyle(fontWeight: FontWeight.w100)),
+                        onPressed: () {           
+                        },
+                      ),
+                    ),
+                  ),
 
-            // login button
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: ElevatedButton(
-                  child: const Text("Log in", style:TextStyle(fontWeight: FontWeight.w100)),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MyHomePage()),
-                    );              
-                  },
-                ),
-              ),
-            ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: ElevatedButton(
+                        child: const Text("Log out", style:TextStyle(fontWeight: FontWeight.w100)),
+                        onPressed: () {
+                          recordLogin(false);       
+                        },
+                      ),
+                    ),
+                  ),
 
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: ElevatedButton(
-                  child: const Text("Get started", style:TextStyle(fontWeight: FontWeight.w100)),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MyHomePage()),
-                    );              
-                  },
-                ),
+              ],
               ),
             ),
-        ],
+          ),
         ),
       ),
     );
   }
-
 }

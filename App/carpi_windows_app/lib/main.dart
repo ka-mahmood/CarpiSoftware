@@ -1,8 +1,5 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-// import 'package:english_words/english_words.dart';
-// import 'package:provider/provider.dart';
-
 import 'package:flutter/material.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
@@ -14,19 +11,29 @@ import 'login_page.dart';
 import 'dashboard_page.dart';
 import 'progress_page.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 void main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+Future<String> checkLogin() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  bool? loginStatus = prefs.getBool("login");
+  return loginStatus.toString();
+}
 
+String loginStatus = ''; // global var to hold login status
+
+class MyApp extends StatelessWidget {
+  
+  const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
+  checkLogin().then((String value) {loginStatus = value;});
+
   final textTheme = Theme.of(context).textTheme;
-    return MaterialApp(    // return ChangeNotifierProvider(
-      // create: (context) => MyAppState(),
-      // child: MaterialApp(
+    return MaterialApp(    
         title: 'Carpi App',
         darkTheme: ThemeData(
           textTheme: GoogleFonts.latoTextTheme(textTheme).copyWith(),  
@@ -35,8 +42,15 @@ class MyApp extends StatelessWidget {
         ),
         themeMode: ThemeMode.dark, 
         debugShowCheckedModeBanner: false,
-        home: StartupPage(),
-    // ),
+        home: Builder(
+          builder: (_) {
+            if (loginStatus == "false") { // not logged in 
+              return StartupPage();
+            } else {
+              return MyHomePage();
+            }
+          }
+        )
     );
   }
 }
@@ -67,16 +81,12 @@ class _MyHomePageState extends State<MyHomePage> {
     switch (selectedIndex) {
       case 0:
         page = Dashboard();
-        // break;
       case 1:
         page = PrescribedExercises();
-        // break;
       case 2:
         page = Progress();
-        // break;
       case 3:
         page = StartupPage();
-        // break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
