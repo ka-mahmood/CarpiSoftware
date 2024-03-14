@@ -9,13 +9,14 @@ class StartupPage extends StatefulWidget {
   State<StartupPage> createState() => _StartupPage();
 }
 
-String loginStatus = '';
+// String loginStatus = '';
 
 class _StartupPage extends State<StartupPage> {
-
+  String loginStatus = '';
   @override
   void initState() {
     super.initState();
+    AsyncSnapshot.waiting();
     checkLogin();
   }
 
@@ -190,9 +191,7 @@ class _StartupPage extends State<StartupPage> {
 
   recordLogin(bool status) async {
     final prefs = await SharedPreferences.getInstance();
-    // setState(() {
-      loginStatus = status.toString();
-    // }); 
+    loginStatus = status.toString();
     prefs.setString('login', status.toString());
   }
   

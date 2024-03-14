@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart'; 
 
 // import the self-made classes
 import 'exercise_page.dart';
@@ -11,47 +12,18 @@ import 'login_page.dart';
 import 'dashboard_page.dart';
 import 'progress_page.dart';
 import 'account.dart';
-
-class RestartWidget extends StatefulWidget {
-  RestartWidget({this.child});
- 
-  final Widget? child;
- 
-  static void restartApp(BuildContext context) {
-    context.findAncestorStateOfType<_RestartWidgetState>()?.restartApp();
-  }
- 
-  @override
-  State<StatefulWidget> createState() {
-    return _RestartWidgetState();
-  }
-}
- 
-class _RestartWidgetState extends State<RestartWidget> {
-  Key key = UniqueKey();
- 
-  void restartApp() {
-    setState(() {
-      key = UniqueKey();
-    });
-  }
- 
- 
-  @override
-  Widget build(BuildContext context) {
-    return KeyedSubtree(
-      key: key,
-      child: widget.child ?? Container(),
-    );
-  }
-}
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 void main() async {
-  runApp(      
-    RestartWidget(
-      child:  MyApp()
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  await Future.delayed(const Duration(seconds: 1));
+  runApp(
+    Phoenix(
+      child: MyApp(),
     ),
   );
+  FlutterNativeSplash.remove();
 }
 
 String loginStatus = ''; // global var to hold login status
