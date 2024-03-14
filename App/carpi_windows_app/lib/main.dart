@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../web_view_container.dart';
 
 void main() {
   runApp(MyApp());
@@ -335,6 +336,15 @@ class StartupPage extends StatelessWidget {
                 ),
               ),
             ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => WebViewContainer()),
+                );
+              },
+              child: Text('Open Web View'),
+            )
         ],
         ),
       ),

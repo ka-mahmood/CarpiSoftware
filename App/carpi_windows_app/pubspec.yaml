@@ -20,6 +20,7 @@ dependencies:
   curved_labeled_navigation_bar: ^2.0.2
   google_fonts: ^6.2.1
   flutter_bluetooth_serial: ^0.3.2
+  webview_flutter: ^4.7.0
 
 dev_dependencies:
   flutter_test:
