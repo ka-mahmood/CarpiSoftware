@@ -36,7 +36,8 @@ class _AccountPage extends State<AccountPage> {
               child: const Text("Log out", style:TextStyle(fontWeight: FontWeight.w100)),
               onPressed: () {
                 recordLogin(false);
-                Phoenix.rebirth(context);
+                    Phoenix.rebirth(context);
+
               },
             ),
           ),
