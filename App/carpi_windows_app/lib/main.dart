@@ -70,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
       Dashboard(),
       PrescribedExercises(),
       Progress(),
-      StartupPage(),
+      AccountPage(),
     ];
 
     // switching for the side navigation bar
