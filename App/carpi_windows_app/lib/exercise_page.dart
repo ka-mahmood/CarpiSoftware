@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'run_exercise_page.dart';
 
 List<ExerciseCardModel> _cardModelList = [];
 
@@ -160,6 +161,14 @@ class _PrescribedExercises extends State<PrescribedExercises> {
           Padding(
             padding: EdgeInsets.fromLTRB(15.0, 0, 0, 20.0),
             child: Text(
+              ("Duration: ${cardModel.duration} seconds"),
+              style: TextStyle(color: colorScheme.onBackground),
+            ),
+          ),
+
+          Padding(
+            padding: EdgeInsets.fromLTRB(15.0, 0, 0, 20.0),
+            child: Text(
               cardModel.description,
               style: TextStyle(color: colorScheme.onBackground),
             )
@@ -259,7 +268,7 @@ class _PrescribedExercises extends State<PrescribedExercises> {
               style: TextStyle(fontSize: 24.0, color: colorScheme.onBackground),
             ),
             content: Container(
-              height: 400,
+              height: 550,
               width: 500,
               color: Colors.black12,
               child: SingleChildScrollView(
@@ -367,6 +376,9 @@ class _PrescribedExercises extends State<PrescribedExercises> {
                           ElevatedButton(
                             child: const Text("Submit"),
                             onPressed: () {
+                              if (exerciseName == "") {
+                                exerciseName = "Unnamed exercise";
+                              }
                               if (!editing) {
                                 _cardModelList.add(ExerciseCardModel(exerciseName: exerciseName, 
                                                                       description: description, 
@@ -406,7 +418,7 @@ class Header extends StatelessWidget {
   final double maxHeight;
   final double minHeight;
 
-  const Header({Key? key, required this.maxHeight, required this.minHeight}) : super(key: key);
+  const Header({super.key, required this.maxHeight, required this.minHeight});
 
   @override
   Widget build(BuildContext context) {
@@ -429,7 +441,8 @@ class Header extends StatelessWidget {
                 Container(
                   decoration: BoxDecoration(
                     color: colorScheme.background,
-                  ),            ),
+                  ),            
+                ),
                 _buildTitle(animation),
               ],
             );
@@ -453,7 +466,7 @@ class Header extends StatelessWidget {
               begin: Alignment.bottomLeft, end: Alignment.center,)
           .evaluate(animation),
       child: Container(
-        margin: EdgeInsets.only(bottom: 10, left: 20),
+        margin: EdgeInsets.only(bottom: 10, left: 20, right: 20),
         child: RichText(
           text: TextSpan(
             children: <InlineSpan>[
@@ -473,77 +486,6 @@ class Header extends StatelessWidget {
               ),
             ]
           )
-        ),
-      ),
-    );
-  }
-
-  
-}
-
-class RunExercisePage extends StatelessWidget {
-  // run the exercises - this will be the 'workout' screen
-  final ExerciseCardModel exercise;
-  RunExercisePage({required this.exercise});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black12,
-        title: Text(exercise.exerciseName, style: TextStyle(fontSize: 16)),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.add_alert),
-            tooltip: 'Show Snackbar',
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('This is a snackbar')));
-            },
-          ),
-
-          IconButton(
-            icon: const Icon(Icons.navigate_next),
-            tooltip: 'Go to the next page',
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute<void>(
-                builder: (BuildContext context) {
-                  return Scaffold(
-                    appBar: AppBar(
-                      title: const Text('Next page'),
-                    ),
-                    body: const Center(
-                      child: Text(
-                        'This is the next page',
-                        style: TextStyle(fontSize: 24),
-                      ),
-                    ),
-                  );
-                },
-              ));
-            },
-          ),
-        ],
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            Text(
-              'This is the home page',
-              style: TextStyle(fontSize: 24),
-            ),
-            IconButton(
-              icon: Icon(Icons.notification_add),
-              onPressed: () {
-
-                //vibrate
-                Clipboard.setData(ClipboardData(text: ''));
-                HapticFeedback.lightImpact();
-                // send notification
-
-              },
-            ),
-          ],
         ),
       ),
     );
@@ -586,7 +528,4 @@ class ExerciseCardModel {
     'weight': weight,
     };
   }
-
-  
-
 }
