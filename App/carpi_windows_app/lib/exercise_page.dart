@@ -466,7 +466,7 @@ class Header extends StatelessWidget {
               begin: Alignment.bottomLeft, end: Alignment.center,)
           .evaluate(animation),
       child: Container(
-        margin: EdgeInsets.only(bottom: 10, left: 20, right: 20),
+        margin: EdgeInsets.only(bottom: 10, left: 50, right: 20),
         child: RichText(
           text: TextSpan(
             children: <InlineSpan>[

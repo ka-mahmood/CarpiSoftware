@@ -1,20 +1,9 @@
 import 'dart:async';
-import 'dart:math';
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class Progress extends StatefulWidget {
   Progress({super.key});
-
-  List<Color> get availableColors => const <Color>[
-        Colors.purple,
-        Colors.yellow,
-        Colors.blue,
-        Colors.orange,
-        Colors.pink,
-        Colors.red,
-      ];
 
   final Color barBackgroundColor =
       Color(0xff404E5C);
@@ -72,7 +61,7 @@ class _Progress extends State<Progress> {
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
                   if (index == 0 ) {
-                    return makeConsistencyGraph();
+                    return (makeConsistencyGraph());
                   }
                 },
               ),
@@ -85,102 +74,144 @@ class _Progress extends State<Progress> {
 
   SafeArea makeConsistencyGraph () {
     return SafeArea(
-    child: SizedBox(
-      child: SingleChildScrollView(
-            child: Column (
-              children: [
-                Card(
-                  color: Color(0x40404E5C),
-                  child: Padding( // insert an element
-                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-                    child: AspectRatio(
-                      aspectRatio: 1.5,
-                      child: Stack(
-                        children: <Widget>[
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              RichText(
-                                text: TextSpan(
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: 'Consistency',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 20
-                                      ),
-                                    ),                            
-                                  ]
-                                )
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Expanded(
-                                child: BarChart(
-                                  mainBarData(),
-                                  swapAnimationDuration: animDuration,
+    child: SingleChildScrollView(
+
+          child: Column (
+            children: [
+              Card(
+                color: Color(0x40404E5C),
+                child: Padding( // insert an element
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                  child: Stack(
+                    children: <Widget>[
+                      RichText(
+                          text: TextSpan(
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: 'Consistency',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 20
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 12,
-                              ),
-                            ],
+                              ),                            
+                            ]
+                          )
+                        ),
+                        
+                      Column (
+                        children: <Widget> [
+                      AspectRatio(
+                        aspectRatio: 1.2,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            right: 18,
+                            left: 12,
+                            top: 40,
+                            bottom: 12,
                           ),
+                          child: BarChart(
+                            mainBarData(),
+                          ),
+                        ),
+                      ),
+                          TextButton(onPressed: () {}, child: Text("See more"),),
                         ],
                       ),
-                    )
-                  ),
+                    ],
+                  )
                 ),
-      
-                Padding( // insert an element
-                  padding: const EdgeInsets.all(10.0),
-                  child: Card (
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    elevation: 5.0,
-                    child: Image.network(
-                      'https://carpirehab.files.wordpress.com/2023/12/full_fdp_design.png?w=2000&h=',
-                      // width: width,
-                      // height: 250,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-      
-                Padding( // insert an element
-                  padding: const EdgeInsets.all(10.0),
-                  child: Card (
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15), // Adjust the radius as needed
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    elevation: 5.0,
-                    child: FittedBox(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          IconButton(icon: Icon(Icons.arrow_back_ios_new), onPressed: () {}, iconSize: 50),
-                          Image.network(
-                            'https://carpirehab.files.wordpress.com/2023/12/image-5.png?w=2000&h=',
-                              alignment: Alignment.center,
-                              fit: BoxFit.cover,
-                            ),
-                          IconButton(icon: Icon(Icons.arrow_forward_ios), onPressed: () {}, iconSize: 50),
-                        ],
+              ),
+
+
+    
+              Card(
+                color: Color(0x40404E5C),
+                child: Padding( // insert an element
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                  child: Stack(
+                    children: <Widget>[
+                          RichText(
+                            text: TextSpan(
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: 'Range of Motion',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 20
+                                  ),
+                                ),                            
+                              ]
+                            )
+                          ),
+                      AspectRatio(
+                        aspectRatio: 1.2,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            right: 18,
+                            left: 12,
+                            top: 40,
+                            bottom: 12,
+                          ),
+                          child: LineChart(
+                            mainProgressChartData(),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
+                      SizedBox(
+                        width: 60,
+                        height: 34,
+                      ),
+                    ],
+                  )
                 ),
-      
-      
-              ],
-            ),
+              ),
+  
+              Card(
+                color: Color(0x40404E5C),
+                child: Padding( // insert an element
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                  child: Stack(
+                    children: <Widget>[
+                          RichText(
+                            text: TextSpan(
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: 'Strength',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 20
+                                  ),
+                                ),                            
+                              ]
+                            )
+                          ),
+                      AspectRatio(
+                        aspectRatio: 1.2,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            right: 18,
+                            left: 12,
+                            top: 40,
+                            bottom: 12,
+                          ),
+                          child: LineChart(
+                            mainStrengthChartData(),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 60,
+                        height: 34,
+                      ),
+                    ],
+                  )
+                ),
+              ),
+
+
+            ],
           ),
-      ),
+        ),
     );
   }
 
@@ -208,6 +239,7 @@ class _Progress extends State<Progress> {
     return BarChartGroupData(
       x: x,
       barRods: [
+                   
         BarChartRodData(
           toY: isTouched ? y + 0.2 : y,
           color: isTouched ? widget.touchedBarColor : barColor,
@@ -251,6 +283,7 @@ class _Progress extends State<Progress> {
     return BarChartData(
       barTouchData: BarTouchData(
         touchTooltipData: BarTouchTooltipData(
+          
           tooltipBgColor: Colors.blueGrey,
           tooltipHorizontalAlignment: FLHorizontalAlignment.right,
           tooltipMargin: -10,
@@ -279,14 +312,14 @@ class _Progress extends State<Progress> {
               const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
-                fontSize: 18,
+                fontSize: 14,
               ),
               children: <TextSpan>[
                 TextSpan(
                   text: (rod.toY).toInt().toString(),
                   style: TextStyle(
                     color: widget.touchedBarColor,
-                    fontSize: 16,
+                    fontSize: 11,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -294,7 +327,7 @@ class _Progress extends State<Progress> {
                   text: "/10 exercises",
                   style: TextStyle(
                     color: widget.touchedBarColor,
-                    fontSize: 16,
+                    fontSize: 11,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -376,6 +409,258 @@ class _Progress extends State<Progress> {
     );
   }
 
+  Widget leftTitleWidgets(double value, TitleMeta meta) {
+    
+    const style = TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 15,
+      color: Colors.white,
+    );
+    String text;
+    switch (value.toInt()) {
+      case 0:
+        text = '0°';
+      case 15:
+        text = '15°';
+      case 30:
+        text = '30°';
+      case 45:
+        text = '45°';
+      case 60:
+        text = '60°';
+      case 75:
+        text = '75°';
+      case 90:
+        text = '90°';
+      default:
+        return Container();
+    }
+    return Text(text, style: style, textAlign: TextAlign.left);  
+  }
+
+  Widget leftStrengthWidgets(double value, TitleMeta meta) {
+    
+    const style = TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 15,
+      color: Colors.white,
+    );
+    String text;
+    switch (value.toInt()) {
+      case 0:
+        text = '0°';
+      case 20:
+        text = '20°';
+      case 40:
+        text = '40°';
+      case 60:
+        text = '60°';
+      case 80:
+        text = '80°';
+      case 100:
+        text = '100°';
+      default:
+        return Container();
+    }
+    return Text(text, style: style, textAlign: TextAlign.left);  
+  }
+
+
+  LineChartData mainProgressChartData() {
+    return LineChartData(
+      gridData: FlGridData(
+        show: true,
+        drawVerticalLine: true,
+        horizontalInterval: 15,
+        verticalInterval: 1,
+        getDrawingHorizontalLine: (value) {
+          return const FlLine(
+            color: Colors.blueGrey,
+            strokeWidth: 1,
+          );
+        },
+        getDrawingVerticalLine: (value) {
+          return const FlLine(
+            color: Colors.blueGrey,
+            strokeWidth: 1,
+          );
+        },
+      ),
+      titlesData: FlTitlesData(
+        show: true,
+        rightTitles: const AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        topTitles: const AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 40,
+            interval: 1,
+            getTitlesWidget: getTitles,
+          ),
+        ),
+        leftTitles: AxisTitles(
+
+          sideTitles: SideTitles(
+            showTitles: true,
+            interval: 1,
+            getTitlesWidget: leftTitleWidgets,
+            reservedSize: 30,
+          ),
+        ),
+      ),
+      borderData: FlBorderData(
+        show: true,
+        border: Border.all(color: Colors.blueGrey),
+      ),
+      minX: 0,
+      maxX: 6,
+      // minY: 0,
+      // maxY: 90,
+      lineBarsData: [
+        LineChartBarData(
+          spots: const [
+            FlSpot(0, 30),
+            FlSpot(3, 35),
+            FlSpot(5, 42),
+            FlSpot(6, 45),
+          ],
+          isCurved: true,
+
+          barWidth: 2,
+          isStrokeCapRound: true,
+          dotData: const FlDotData(
+            show: true,
+          ),
+          belowBarData: BarAreaData(
+            show: true,
+          ),
+        ),
+
+        LineChartBarData(
+          color: Colors.green, 
+          spots: const [
+            FlSpot(0, 30),
+            FlSpot(6, 60),
+          ],
+          isCurved: true,
+
+          barWidth: 2,
+          isStrokeCapRound: true,
+          dotData: const FlDotData(
+            show: true,
+          ),
+          belowBarData: BarAreaData(
+            show: false,
+          ),
+        ),
+
+
+      ],
+    );
+  }
+
+  LineChartData mainStrengthChartData() {
+    return LineChartData(
+      gridData: FlGridData(
+        show: true,
+        drawVerticalLine: true,
+        horizontalInterval: 15,
+        verticalInterval: 1,
+        getDrawingHorizontalLine: (value) {
+          return const FlLine(
+            color: Colors.blueGrey,
+            strokeWidth: 1,
+          );
+        },
+        getDrawingVerticalLine: (value) {
+          return const FlLine(
+            color: Colors.blueGrey,
+            strokeWidth: 1,
+          );
+        },
+      ),
+      titlesData: FlTitlesData(
+        show: true,
+        rightTitles: const AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        topTitles: const AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 40,
+            interval: 1,
+            getTitlesWidget: getTitles,
+          ),
+        ),
+        leftTitles: AxisTitles(
+
+          sideTitles: SideTitles(
+            showTitles: true,
+            interval: 1,
+            getTitlesWidget: leftStrengthWidgets,
+            reservedSize: 30,
+          ),
+        ),
+      ),
+      borderData: FlBorderData(
+        show: true,
+        border: Border.all(color: Colors.blueGrey),
+      ),
+      minX: 0,
+      maxX: 6,
+      // minY: 0,
+      // maxY: 90,
+      lineBarsData: [
+        LineChartBarData(
+          color: Color(0xff998FC7),
+          spots: const [
+            FlSpot(0, 30),
+            FlSpot(3, 35),
+            FlSpot(5, 42),
+            FlSpot(6, 45),
+          ],
+          isCurved: true,
+
+          barWidth: 2,
+          isStrokeCapRound: true,
+          dotData: const FlDotData(
+            show: true,
+          ),
+          belowBarData: BarAreaData(
+            show: true,
+          ),
+        ),
+
+        LineChartBarData(
+          color: Colors.red, 
+          spots: const [
+            FlSpot(0, 35),
+            FlSpot(6, 45),
+          ],
+          isCurved: true,
+
+          barWidth: 2,
+          isStrokeCapRound: true,
+          dotData: const FlDotData(
+            show: true,
+          ),
+          belowBarData: BarAreaData(
+            show: false,
+          ),
+        ),
+
+
+      ],
+    );
+  }
+
   Future<dynamic> refreshState() async {
     setState(() {});
     await Future<dynamic>.delayed(
@@ -437,7 +722,7 @@ class Header extends StatelessWidget {
               begin: Alignment.bottomLeft, end: Alignment.center,)
           .evaluate(animation),
       child: Container(
-        margin: EdgeInsets.only(bottom: 10, left: 20, right: 20),
+        margin: EdgeInsets.only(bottom: 10, left: 50, right: 20),
         child: RichText(
           text: TextSpan(
             children: <InlineSpan>[

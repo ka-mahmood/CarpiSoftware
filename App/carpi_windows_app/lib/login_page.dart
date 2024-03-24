@@ -44,6 +44,9 @@ class _StartupPage extends State<StartupPage> {
     });
   }
 
+  initialization();
+
+
   // placeholder authentication for email
   Future signIn() async {
       if (_formKey.currentState!.validate()) {
