@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,8 +12,14 @@ class StartupPage extends StatefulWidget {
 
 // String loginStatus = '';
 
+void initialization() async {
+  await Future.delayed(const Duration(milliseconds: 500));
+  FlutterNativeSplash.remove();
+}
+
 class _StartupPage extends State<StartupPage> {
   String loginStatus = '';
+  String os = "";
   @override
   void initState() {
     super.initState();
@@ -27,14 +34,19 @@ class _StartupPage extends State<StartupPage> {
 
   @override
   Widget build(BuildContext context) {
-  
+
   if (loginStatus == 'true') {
     print('passes into next');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Navigator.pushReplacement(context,
                               MaterialPageRoute(builder: (BuildContext context) => MyHomePage()));
+      initialization();
     });
+  } else {
+    FlutterNativeSplash.remove();
   }
+
+
 
   // placeholder authentication for email
   Future signIn() async {
@@ -201,6 +213,4 @@ class _StartupPage extends State<StartupPage> {
       loginStatus = (prefs.getString('login') ?? '');
     });  
   }
-
-
 }

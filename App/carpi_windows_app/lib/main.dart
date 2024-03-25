@@ -5,6 +5,11 @@ import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart'; 
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:local_notifier/local_notifier.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter_timezone/flutter_timezone.dart';
 
 // import the self-made classes
 import 'exercise_page.dart';
@@ -12,26 +17,36 @@ import 'login_page.dart';
 import 'dashboard_page.dart';
 import 'progress_page.dart';
 import 'account.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
+
+
+Future<void> _configureLocalTimeZone() async {
+  tz.initializeTimeZones();
+  // final String? timeZoneName = await FlutterTimezone.getLocalTimezone();
+  // tz.setLocalLocation(tz.getLocation(timeZoneName!));
+}
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  await Future.delayed(const Duration(seconds: 1));
+  await _configureLocalTimeZone();
+  
+  await localNotifier.setup(
+    appName: 'Carpi Windows',
+    shortcutPolicy: ShortcutPolicy.requireCreate,
+  );
+
   runApp(
     Phoenix(
       child: MyApp(),
     ),
   );
-  FlutterNativeSplash.remove();
 }
 
 String loginStatus = ''; // global var to hold login status
 
 class MyApp extends StatelessWidget {
-  
   const MyApp({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
 
@@ -66,11 +81,11 @@ class _MyHomePageState extends State<MyHomePage> {
     var colorScheme = Theme.of(context).colorScheme;
 
     // switching for the app navigation bar
-    List<dynamic> page_class = [
+    List<dynamic> pageClass = [
       Dashboard(),
       PrescribedExercises(),
       Progress(),
-      StartupPage(),
+      AccountPage(),
     ];
 
     // switching for the side navigation bar
@@ -95,7 +110,6 @@ class _MyHomePageState extends State<MyHomePage> {
         child: page,
       ),
     );
-
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -144,7 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Container(
         color: colorScheme.background,
         child: Center(
-          child: page_class[selectedIndex],
+          child: pageClass[selectedIndex],
         )
       )
     );  
@@ -186,8 +200,7 @@ class _MyHomePageState extends State<MyHomePage> {
             );
           }
         },
-      ),
-      
+      )
     );
   }
 }
