@@ -95,7 +95,9 @@ class _PrescribedExercises extends State<PrescribedExercises> {
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
                   if (index < _cardModelList.length) {
-                    return makeExerciseCardModel(_cardModelList[index], context);
+                    return Padding(
+                      padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      child: makeExerciseCardModel(_cardModelList[index], context));
                   }
                   return null;
                 },

@@ -42,9 +42,10 @@ class _StartupPage extends State<StartupPage> {
                               MaterialPageRoute(builder: (BuildContext context) => MyHomePage()));
       initialization();
     });
+  } else {
+    FlutterNativeSplash.remove();
   }
 
-  initialization();
 
 
   // placeholder authentication for email

@@ -46,6 +46,8 @@ dependencies:
   windows_notification: ^1.0.0
   datetime_picker_formfield: ^2.0.1
   fl_chart: ^0.66.2
+  syncfusion_flutter_charts: ^25.1.35
+  awesome_circular_chart: ^1.0.0
 
 
 dev_dependencies:

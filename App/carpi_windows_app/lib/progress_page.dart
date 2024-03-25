@@ -27,10 +27,6 @@ class _Progress extends State<Progress> {
   @override
   Widget build(BuildContext context) {
     var colorScheme = Theme.of(context).colorScheme;
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    var padding = MediaQuery.of(context).padding;
-    double newheight = height - padding.top - padding.bottom;
     return Scaffold(
       backgroundColor: colorScheme.background,
       body: NotificationListener<ScrollEndNotification>(
@@ -60,8 +56,15 @@ class _Progress extends State<Progress> {
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
-                  if (index == 0 ) {
-                    return (makeConsistencyGraph());
+                  if (index == 0) {
+                    return Padding(padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                    child: (consistencyGraph(colorScheme)));
+                  } else if (index == 1) {
+                    return Padding(padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                    child: (romGraph(colorScheme)));     
+                  } else if (index == 2) {
+                    return Padding(padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                    child: (strengthGraph(colorScheme)));
                   }
                 },
               ),
@@ -72,146 +75,224 @@ class _Progress extends State<Progress> {
     );
   }
 
-  SafeArea makeConsistencyGraph () {
-    return SafeArea(
-    child: SingleChildScrollView(
-
-          child: Column (
-            children: [
-              Card(
-                color: Color(0x40404E5C),
-                child: Padding( // insert an element
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-                  child: Stack(
-                    children: <Widget>[
-                      RichText(
-                          text: TextSpan(
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: 'Consistency',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 20
-                                ),
-                              ),                            
-                            ]
-                          )
-                        ),
-                        
-                      Column (
-                        children: <Widget> [
-                      AspectRatio(
-                        aspectRatio: 1.2,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            right: 18,
-                            left: 12,
-                            top: 40,
-                            bottom: 12,
+  Card consistencyGraph (ColorScheme colorScheme) {
+    return Card(
+          color: colorScheme.background,
+          child: Padding( // insert an element
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+            child: Stack(
+              children: <Widget>[
+                RichText(
+                    text: TextSpan(
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: 'Exercise Consistency',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w300,
+                            fontSize: 20
                           ),
-                          child: BarChart(
-                            mainBarData(),
-                          ),
-                        ),
-                      ),
-                          TextButton(onPressed: () {}, child: Text("See more"),),
-                        ],
-                      ),
-                    ],
-                  )
+                        ),                            
+                      ]
+                    )
+                  ),
+                  
+                Column (
+                  children: <Widget> [
+                AspectRatio(
+                  aspectRatio: 1.2,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      right: 18,
+                      left: 12,
+                      top: 40,
+                      bottom: 0,
+                    ),
+                    child: BarChart(
+                      mainBarData(),
+                    ),
+                  ),
                 ),
-              ),
-
-
-    
-              Card(
-                color: Color(0x40404E5C),
-                child: Padding( // insert an element
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-                  child: Stack(
-                    children: <Widget>[
-                          RichText(
-                            text: TextSpan(
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: 'Range of Motion',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 20
-                                  ),
-                                ),                            
-                              ]
-                            )
-                          ),
-                      AspectRatio(
-                        aspectRatio: 1.2,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            right: 18,
-                            left: 12,
-                            top: 40,
-                            bottom: 12,
-                          ),
-                          child: LineChart(
-                            mainProgressChartData(),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 60,
-                        height: 34,
-                      ),
-                    ],
-                  )
+                    TextButton(onPressed: () {}, child: Text("See more"),),
+                  ],
                 ),
-              ),
-  
-              Card(
-                color: Color(0x40404E5C),
-                child: Padding( // insert an element
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-                  child: Stack(
-                    children: <Widget>[
-                          RichText(
-                            text: TextSpan(
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: 'Strength',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 20
-                                  ),
-                                ),                            
-                              ]
-                            )
-                          ),
-                      AspectRatio(
-                        aspectRatio: 1.2,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            right: 18,
-                            left: 12,
-                            top: 40,
-                            bottom: 12,
-                          ),
-                          child: LineChart(
-                            mainStrengthChartData(),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 60,
-                        height: 34,
-                      ),
-                    ],
-                  )
-                ),
-              ),
-
-
-            ],
+              ],
+            )
           ),
-        ),
+        );
+  }
+
+  Card romGraph(ColorScheme colorScheme) {
+    return Card(
+      color: colorScheme.background,
+      child: Padding( // insert an element
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+        child: Stack(
+          children: <Widget>[
+                RichText(
+                  text: TextSpan(
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: 'Range of Motion',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w300,
+                          fontSize: 20
+                        ),
+                      ),                            
+                    ]
+                  )
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 40, left: 40, top: 30, bottom: 30),
+                  child: Text.rich(
+                      TextSpan(
+                          text:
+                              "Target",
+                          children: [
+                            WidgetSpan(
+                              child: Icon(
+                                Icons.line_axis,
+                                color: Colors.green,
+                                size: 20,
+                              ),
+                            ),
+                          ]),
+                          style: TextStyle(color: Colors.white),
+                      ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 40, left: 100, top: 30, bottom: 40),
+                  child: Text.rich(
+                      TextSpan(
+                          text:
+                              "Actual",
+                          children: [
+                            WidgetSpan(
+                              child: Icon(
+                                Icons.line_axis,
+                                color: Colors.cyan,
+                                size: 20,
+                              ),
+                            ),
+                          ]),
+                          style: TextStyle(color: Colors.white),
+                      ),
+                ),
+            Column (
+              children: <Widget> [
+              AspectRatio(
+              aspectRatio: 1.2,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  right: 0,
+                  left: 0,
+                  top: 55,
+                  bottom: 0,
+                ),
+                child: LineChart(
+                  mainProgressChartData(),
+                ),
+              ),
+            ),
+                TextButton(onPressed: () {}, child: Text("See more"),),
+              ],
+            ),
+            SizedBox(
+              width: 60,
+              height: 34,
+            ),
+
+          ],
+        )
+      ),
+    );
+  }
+
+  Card strengthGraph(ColorScheme colorScheme) {
+    return Card(
+      color: colorScheme.background,
+      child: Padding( // insert an element
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+        child: Stack(
+          
+          children: <Widget>[
+                Container(
+                  child: RichText(
+                    text: TextSpan(
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: 'Strength',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w300,
+                            fontSize: 20
+                          ),
+                        ),                            
+                      ]
+                    )
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 40, left: 40, top: 30, bottom: 40),
+                  child: Text.rich(
+                      TextSpan(
+                          text:
+                              "Target",
+                          children: [
+                            WidgetSpan(
+                              child: Icon(
+                                Icons.line_axis,
+                                color: Colors.red,
+                                size: 20,
+                              ),
+                            ),
+                          ]),
+                          style: TextStyle(color: Colors.white),
+                      ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 40, left: 100, top: 30, bottom: 40),
+                  child: Text.rich(
+                      TextSpan(
+                          text:
+                              "Actual",
+                          children: [
+                            WidgetSpan(
+                              child: Icon(
+                                Icons.line_axis,
+                                color: Colors.cyan,
+                                size: 20,
+                              ),
+                            ),
+                          ]),
+                          style: TextStyle(color: Colors.white),
+                      ),
+                ),
+            Column (
+              children: <Widget> [
+            AspectRatio(
+              aspectRatio: 1.2,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  right: 0,
+                  left: 0,
+                  top: 55,
+                  bottom: 0,
+                ),
+                child: LineChart(
+                  mainStrengthChartData(),
+                ),
+              ),
+            ),
+                TextButton(onPressed: () {}, child: Text("See more"),),
+              ],
+            ),                              
+
+            SizedBox(
+              width: 60,
+              height: 34,
+            ),
+          ],
+        )
+      ),
     );
   }
 
@@ -269,7 +350,7 @@ class _Progress extends State<Progress> {
           case 3:
             return makeGroupData(3, 7, isTouched: i == touchedIndex);
           case 4:
-            return makeGroupData(4, 0, isTouched: i == touchedIndex);
+            return makeGroupData(4, 1, isTouched: i == touchedIndex);
           case 5:
             return makeGroupData(5, 9, isTouched: i == touchedIndex);
           case 6:
@@ -285,8 +366,8 @@ class _Progress extends State<Progress> {
         touchTooltipData: BarTouchTooltipData(
           
           tooltipBgColor: Colors.blueGrey,
-          tooltipHorizontalAlignment: FLHorizontalAlignment.right,
-          tooltipMargin: -10,
+          tooltipHorizontalAlignment: FLHorizontalAlignment.center,
+          tooltipMargin: 0,
           getTooltipItem: (group, groupIndex, rod, rodIndex) {
             String weekDay;
             switch (group.x) {
@@ -448,17 +529,21 @@ class _Progress extends State<Progress> {
     String text;
     switch (value.toInt()) {
       case 0:
-        text = '0°';
+        text = '0%';
       case 20:
-        text = '20°';
+        text = '20%';
+      case 30:
+        text = '30%';
       case 40:
-        text = '40°';
+        text = '40%';
+      case 50:
+        text = '50%';
       case 60:
-        text = '60°';
+        text = '60%';
       case 80:
-        text = '80°';
+        text = '80%';
       case 100:
-        text = '100°';
+        text = '100%';
       default:
         return Container();
     }
@@ -619,7 +704,6 @@ class _Progress extends State<Progress> {
       // maxY: 90,
       lineBarsData: [
         LineChartBarData(
-          color: Color(0xff998FC7),
           spots: const [
             FlSpot(0, 30),
             FlSpot(3, 35),
@@ -746,4 +830,5 @@ class Header extends StatelessWidget {
       ),
     );
   }
+  
 }
