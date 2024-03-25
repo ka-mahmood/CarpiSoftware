@@ -40,6 +40,8 @@ dependencies:
   syncfusion_flutter_charts: ^25.1.35
   awesome_circular_chart: ^1.0.0
   reorderables: ^0.6.0
+  dropdown_button2: ^2.3.9
+  circular_countdown_timer: ^0.2.3
 
 
 dev_dependencies:

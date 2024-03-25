@@ -123,9 +123,11 @@ class _Progress extends State<Progress> {
                   
                 Column (
                   children: <Widget> [
-                AspectRatio(
-                  aspectRatio: 2,
-                  child: Padding(
+                SizedBox(
+                  height: 300,
+            child: AspectRatio(
+              aspectRatio: 3,                  
+              child: Padding(
                     padding: const EdgeInsets.only(
                       right: 18,
                       left: 12,
@@ -136,6 +138,7 @@ class _Progress extends State<Progress> {
                       mainBarData(),
                     ),
                   ),
+                ),
                 ),
                     TextButton(onPressed: () {}, child: Text("See more"),),
                   ],
@@ -204,8 +207,10 @@ class _Progress extends State<Progress> {
                 ),
             Column (
               children: <Widget> [
-              AspectRatio(
-              aspectRatio: 1.2,
+                SizedBox(
+                  height: 400,
+            child: AspectRatio(
+              aspectRatio: 2.2,
               child: Padding(
                 padding: const EdgeInsets.only(
                   right: 0,
@@ -216,6 +221,7 @@ class _Progress extends State<Progress> {
                 child: LineChart(
                   mainProgressChartData(),
                 ),
+              ),
               ),
             ),
                 TextButton(onPressed: () {}, child: Text("See more"),),
@@ -293,8 +299,10 @@ class _Progress extends State<Progress> {
                 ),
             Column (
               children: <Widget> [
-            AspectRatio(
-              aspectRatio: 1.2,
+                SizedBox(
+                  height: 400,
+            child: AspectRatio(
+              aspectRatio: 2.2,
               child: Padding(
                 padding: const EdgeInsets.only(
                   right: 0,
@@ -307,6 +315,7 @@ class _Progress extends State<Progress> {
                 ),
               ),
             ),
+                ),
                 TextButton(onPressed: () {}, child: Text("See more"),),
               ],
             ),                              

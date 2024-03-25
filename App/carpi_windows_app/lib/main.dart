@@ -19,18 +19,18 @@ import 'progress_page.dart';
 import 'account.dart';
 
 
-Future<void> _configureLocalTimeZone() async {
-  tz.initializeTimeZones();
-  // ignore: unnecessary_nullable_for_final_variable_declarations
-tz.setLocalLocation(tz.getLocation(await FlutterTimezone.getLocalTimezone()));
-  // final String? timeZoneName = await FlutterTimezone.getLocalTimezone();
-  // tz.setLocalLocation(tz.getLocation(timeZoneName!));
-}
+// Future<void> _configureLocalTimeZone() async {
+//   tz.initializeTimeZones();
+//   // ignore: unnecessary_nullable_for_final_variable_declarations
+// tz.setLocalLocation(tz.getLocation(await FlutterTimezone.getLocalTimezone()));
+//   // final String? timeZoneName = await FlutterTimezone.getLocalTimezone();
+//   // tz.setLocalLocation(tz.getLocation(timeZoneName!));
+// }
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  await _configureLocalTimeZone();
+  // await _configureLocalTimeZone();
   
   await localNotifier.setup(
     appName: 'Carpi Windows',
@@ -169,7 +169,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 SafeArea(
                   child: NavigationRail(
-                    extended: constraints.maxWidth >= 750,
+                    extended: constraints.maxWidth >= 800,
                     backgroundColor: Colors.black12,
                     destinations: [
                       NavigationRailDestination(

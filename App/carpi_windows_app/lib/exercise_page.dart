@@ -9,9 +9,9 @@ List<ExerciseCardModel> _cardModelList = [
     description: "This exercise will help with moving your hand towards your forearm. Do this with weights, as tolerated.", 
     reps: 12, 
     sets: 3, 
-    duration: 10, 
+    duration: 11, 
     weight: 0, 
-    videoLink: "",
+    videoLink: "rDqYtzYE-n8",
     completed: false),
     ExerciseCardModel(exerciseName: "Wrist Extension", 
       description: "This exercise will help with moving your hand away from your forearm. Do this with weights, as tolerated.", 
@@ -19,7 +19,7 @@ List<ExerciseCardModel> _cardModelList = [
       sets: 3, 
       duration: 5, 
       weight: 0, 
-      videoLink: "",
+      videoLink: "6TtkRqPjmsg",
       completed: false),
     ExerciseCardModel(exerciseName: "Radial deviation", 
       description: "This exercise will help with moving your hand side to side. Keep your palm open and rotate your hand towards you.", 
@@ -205,10 +205,14 @@ class _PrescribedExercises extends State<PrescribedExercises> {
               onReorder: _onReorder,
               delegate: ReorderableSliverChildBuilderDelegate(
               (BuildContext context, int index) => 
-                Padding(padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+              Container(
                   child: hideCompleted? 
-                      !_cardModelList[index].completed? makeExerciseCardModel(_cardModelList[index], context) : null : makeExerciseCardModel(_cardModelList[index], context)
-                ),
+                      !_cardModelList[index].completed? 
+                        Padding(padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                        child: makeExerciseCardModel(_cardModelList[index], context)) : null : 
+                        Padding(padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                        child: makeExerciseCardModel(_cardModelList[index], context)),
+              ),
               childCount: _cardModelList.length,
               ),
             )
@@ -313,7 +317,7 @@ class _PrescribedExercises extends State<PrescribedExercises> {
 
 
               IconButton(
-                icon: Icon(Icons.check),
+                icon: Icon(cardModel.completed? Icons.close :Icons.check, color: Colors.green,),
                 color: Colors.green,
                 onPressed: () {
                   var index = _cardModelList.indexOf(cardModel);
