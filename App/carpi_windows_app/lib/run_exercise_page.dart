@@ -1,22 +1,20 @@
-import 'exercise_page.dart';
 import 'package:flutter/material.dart';
 import 'local_notification_service.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'dart:io' show Platform;
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class RunExercisePage extends StatefulWidget {
-  final ExerciseCardModel exercise;
-  RunExercisePage({required this.exercise});
+  RunExercisePage({super.key});
   @override
   // ignore: no_logic_in_create_state
-  State<RunExercisePage> createState() => _RunExercisePage(exercise: exercise);
+  State<RunExercisePage> createState() => _RunExercisePage();
 }
 
 class _RunExercisePage extends State<RunExercisePage> with TrayListener {
   // run the exercises - this will be the 'workout' screen
-  final ExerciseCardModel exercise;
-  _RunExercisePage({required this.exercise});
+  _RunExercisePage();
   
   void sendAndroidNotification(String notifTitle, String notifBody) { // android notification
     final LocalNotificationService localNotificationService =
@@ -56,8 +54,8 @@ class _RunExercisePage extends State<RunExercisePage> with TrayListener {
         setState(() {
           fullDate = DateTimeField.combine(date, time);
         });
-
-        await _notificationService.zonedScheduleNotificationFiveSeconds();
+        // print(fullDate.difference(selectedDate).inSeconds);
+        await _notificationService.zonedScheduleNotification(Duration(seconds: fullDate.difference(tz.TZDateTime.now(tz.local)).inSeconds));
       }
 
 
@@ -72,7 +70,7 @@ class _RunExercisePage extends State<RunExercisePage> with TrayListener {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black12,
-        title: Text(exercise.exerciseName, style: TextStyle(fontSize: 16)),
+        title: Text("Notifications Pane", style: TextStyle(fontSize: 16)),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.add_alert),
@@ -83,27 +81,6 @@ class _RunExercisePage extends State<RunExercisePage> with TrayListener {
             },
           ),
 
-          IconButton(
-            icon: const Icon(Icons.navigate_next),
-            tooltip: 'Go to the next page',
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute<void>(
-                builder: (BuildContext context) {
-                  return Scaffold(
-                    appBar: AppBar(
-                      title: const Text('Next page'),
-                    ),
-                    body: const Center(
-                      child: Text(
-                        'This is the next page',
-                        style: TextStyle(fontSize: 24),
-                      ),
-                    ),
-                  );
-                },
-              ));
-            },
-          ),
         ],
       ),
       body: Center(

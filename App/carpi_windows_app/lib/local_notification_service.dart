@@ -4,10 +4,8 @@ import 'package:carpi_windows_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:notification_permissions/notification_permissions.dart';
-import 'exercise_page.dart';
-// import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-import 'dart:math';
+// import 'dart:math';
 
 // taken and modified from https://medium.com/@abubakarsaddqiuekhan/local-notifications-4e5e037106ce
 
@@ -124,49 +122,44 @@ class LocalNotificationService {
         NotificationPermissions.requestNotificationPermissions();
   }
 
-   Future zonedScheduleNotification(String notifTitle, String notifBody, DateTime date) async {
-        // IMPORTANT!!
-        // tz.initializeTimeZones(); --> call this before using tz.local (ideally put it in your init state)
-        
-        int id = Random().nextInt(10000);
-        print('test');
-        try {
-          await flutterLocalNotificationsPlugin.zonedSchedule(
-            id,
-            notifTitle,
-            notifBody,
-            tz.TZDateTime.parse(tz.local, date.toString()),
-            NotificationDetails(
+
+  Future<void> zonedScheduleNotification(Duration secDuration) async {
+    try {
+      _checkPendingNotificationRequests();
+      int id = DateTime.now().millisecondsSinceEpoch.remainder(100000);
+      print("this is the time in seconds: $secDuration");
+      tz.TZDateTime time =  tz.TZDateTime.now(tz.local).add(secDuration);
+      await flutterLocalNotificationsPlugin.zonedSchedule(
+          id,
+          'Carpi Rehab',
+          'Keep it up! Come back for some re-hand-bilitation.',
+          time,
+          const NotificationDetails(
               android: AndroidNotificationDetails(
                   'your channel id', 'your channel name',
-                  channelDescription: 'your channel description',
-                  largeIcon: DrawableResourceAndroidBitmap("logo"),
-                  icon: "ic_launcher",
-                  playSound: true,
-                  sound: RawResourceAndroidNotificationSound('bell_sound')),
-            ),
-            uiLocalNotificationDateInterpretation:
-                UILocalNotificationDateInterpretation.absoluteTime,
-          );
-          return id;
-        } catch (e) {
-          return -1;
-        }
-      }
+                  importance: Importance.max,
+                  priority: Priority.max,
+                  showWhen: false,
+                  channelDescription: 'your channel description')),
+          payload: jsonEncode({'id': id, 'time': time.toString()}),
+          androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime);
+    } catch (e) {
+      print(e);
+    }
+  }
 
-  Future<void> zonedScheduleNotificationFiveSeconds() async {
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-        0,
-        'Carpi Rehab',
-        'Time to get started with rehab.',
-        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
-        const NotificationDetails(
-            android: AndroidNotificationDetails(
-                'your channel id', 'your channel name',
-                channelDescription: 'your channel description')),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime);
+    Future<void> _checkPendingNotificationRequests() async {
+    final List<PendingNotificationRequest> pendingNotificationRequests =
+        await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+    print('${pendingNotificationRequests.length} pending notification ');
+
+    for (PendingNotificationRequest pendingNotificationRequest
+        in pendingNotificationRequests) {
+      print("${pendingNotificationRequest.id} ${pendingNotificationRequest.payload ?? ""}");
+    }
+    print('NOW ${tz.TZDateTime.now(tz.local)}');
   }
 
 }

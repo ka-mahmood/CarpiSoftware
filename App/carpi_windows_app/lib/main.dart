@@ -21,6 +21,8 @@ import 'account.dart';
 
 Future<void> _configureLocalTimeZone() async {
   tz.initializeTimeZones();
+  // ignore: unnecessary_nullable_for_final_variable_declarations
+tz.setLocalLocation(tz.getLocation(await FlutterTimezone.getLocalTimezone()));
   // final String? timeZoneName = await FlutterTimezone.getLocalTimezone();
   // tz.setLocalLocation(tz.getLocation(timeZoneName!));
 }
@@ -129,7 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           CurvedNavigationBarItem(
             child: Icon(Icons.front_hand),
-            label: 'Exercise',
+            label: 'Routine',
             labelStyle: TextStyle(color: colorScheme.onBackground)
           ),
           CurvedNavigationBarItem(

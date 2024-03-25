@@ -1,6 +1,11 @@
 import 'dart:async';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'exercise_page.dart';
+import 'dart:convert';
+
+List<ExerciseCardModel> _cardModelList = [];
 
 class Progress extends StatefulWidget {
   Progress({super.key});
@@ -23,6 +28,25 @@ class _Progress extends State<Progress> {
   Color cardBgColor = Colors.black;
   final Duration animDuration = const Duration(milliseconds: 250);
   int touchedIndex = -1;
+  double numCompletedToday = 0;
+
+
+  double getCompletionValue() {
+    int completionNum = 0;
+    for (var i = 0; i < _cardModelList.length; i++) {
+      if (_cardModelList[i].completed == true) {
+        completionNum += 1;
+      }
+    }
+    return completionNum/_cardModelList.length;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    readCardsIn();
+    numCompletedToday = getCompletionValue();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +90,7 @@ class _Progress extends State<Progress> {
                     return Padding(padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                     child: (strengthGraph(colorScheme)));
                   }
+                  return null;
                 },
               ),
             )
@@ -99,7 +124,7 @@ class _Progress extends State<Progress> {
                 Column (
                   children: <Widget> [
                 AspectRatio(
-                  aspectRatio: 1.2,
+                  aspectRatio: 2,
                   child: Padding(
                     padding: const EdgeInsets.only(
                       right: 18,
@@ -296,6 +321,18 @@ class _Progress extends State<Progress> {
     );
   }
 
+  Future<void> readCardsIn() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.reload(); 
+    List<String>? decodedCardString = prefs.getStringList('cards');
+    List<ExerciseCardModel> decodedCards = 
+                  decodedCardString!.map((card)
+                  => ExerciseCardModel.fromJson(json.decode(card))).toList();
+    setState(() {
+      _cardModelList = decodedCards;   
+    });
+  }
+
   void _snapAppbar() {
     final scrollDistance = maxHeight - minHeight;
 
@@ -354,7 +391,7 @@ class _Progress extends State<Progress> {
           case 5:
             return makeGroupData(5, 9, isTouched: i == touchedIndex);
           case 6:
-            return makeGroupData(6, 6, isTouched: i == touchedIndex);
+            return makeGroupData(6, getCompletionValue()*10, isTouched: i == touchedIndex);
           default:
             return throw Error();
         }
@@ -372,19 +409,19 @@ class _Progress extends State<Progress> {
             String weekDay;
             switch (group.x) {
               case 0:
-                weekDay = 'March 18';
-              case 1:
                 weekDay = 'March 19';
-              case 2:
+              case 1:
                 weekDay = 'March 20';
-              case 3:
+              case 2:
                 weekDay = 'March 21';
-              case 4:
+              case 3:
                 weekDay = 'March 22';
-              case 5:
+              case 4:
                 weekDay = 'March 23';
-              case 6:
+              case 5:
                 weekDay = 'March 24';
+              case 6:
+                weekDay = 'March 25';
               default:
                 throw Error();
             }
@@ -466,19 +503,19 @@ class _Progress extends State<Progress> {
     );
     Widget text;
     switch (value.toInt()) {
-      case 0:
-        text = const Text('M', style: style);
-      case 1:
+      case 6:
+        text = const Text('M', style: TextStyle(color:Colors.green, fontWeight: FontWeight.bold, fontSize: 14));
+      case 5:
         text = const Text('T', style: style);
-      case 2:
+      case 4:
         text = const Text('W', style: style);
       case 3:
         text = const Text('T', style: style);
-      case 4:
+      case 2:
         text = const Text('F', style: style);
-      case 5:
+      case 1:
         text = const Text('S', style: style);
-      case 6:
+      case 0:
         text = const Text('S', style: style);
       default:
         text = const Text('', style: style);
